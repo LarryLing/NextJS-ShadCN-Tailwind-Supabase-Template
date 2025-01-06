@@ -24,6 +24,7 @@ export default {
         "danger-lighter": "var(--danger-lighter)",
         "danger-lightest": "var(--danger-lightest)",
         "tertiary": "var(--tertiary)",
+        "text-color": "var(--text-color)",
       },
       transitionProperty: {
         "opacity-position": "opacity, left, right, top, bottom",

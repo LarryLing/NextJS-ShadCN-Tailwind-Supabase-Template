@@ -19,7 +19,7 @@
     --danger-lighter: #dc2626;
     --danger-lightest: #ef4444;
 
-    --tertiary: #d2d2d3;
+    --tertiary: #dadadd;
 
     --primary-background: #ffffff;
     --secondary-background: #F2F2F7;
@@ -27,7 +27,7 @@
     --text-color: #000000;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
     :root {
         --tertiary: #2C2C2E;
 
@@ -41,8 +41,9 @@
 body {
     color: var(--text-color);
     background: var(--secondary-background);
+    position: relative;
 }
 
-nav {
+header {
     background: var(--primary-background);
 }
