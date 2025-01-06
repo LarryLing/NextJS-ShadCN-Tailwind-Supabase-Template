@@ -9,8 +9,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        "background": "var(--background)",
-        "foreground": "var(--foreground)",
+        "background": "var(--primary-background)",
+        "foreground": "var(--secondary-foreground)",
         "primary": "var(--primary)",
         "primary-lighter": "var(--primary-lighter)",
         "primary-lightest": "var(--primary-lightest)",
@@ -24,6 +24,7 @@ export default {
         "danger-lighter": "var(--danger-lighter)",
         "danger-lightest": "var(--danger-lightest)",
         "tertiary": "var(--tertiary)",
+        "tertiary-lighter": "var(--tertiary-lighter)",
         "text-color": "var(--text-color)",
       },
       transitionProperty: {
