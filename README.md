@@ -132,7 +132,7 @@ _Below is an example of how you can instruct your audience on installing and set
 1. Get a free API Key at [https://example.com](https://example.com)
 2. Clone the repo
    ```sh
-   git clone https://github.com/github_username/repo_name.git
+   git clone https://github.com/LarryLing/NextJS-Tailwind-Template.git
    ```
 3. Install NPM packages
    ```sh
@@ -144,7 +144,7 @@ _Below is an example of how you can instruct your audience on installing and set
    ```
 5. Change git remote url to avoid accidental pushes to base project
    ```sh
-   git remote set-url origin github_username/repo_name
+   git remote set-url origin github_username/NextJS-Tailwind-Template
    git remote -v # confirm the changes
    ```
 
@@ -197,7 +197,7 @@ Don't forget to give the project a star! Thanks again!
 
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+Distributed under the MIT License. See `LICENSE.md` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -207,7 +207,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Larry Ling - [LinkedIn](https://www.linkedin.com/in/larry-ling-student/) - larryling.main@gmail.com
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Project Link: [https://github.com/LarryLing/NextJS-Tailwind-Template](https://github.com/LarryLing/NextJS-Tailwind-Template)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -225,14 +225,14 @@ Use this space to list resources you find helpful and would like to give credit 
 - [Tailwind-Merge](https://github.com/dcastil/tailwind-merge)
 - [CSS Flexbox Layout Guide](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
 - [CSS Grid Layout Guide](https://css-tricks.com/snippets/css/complete%20%20-guide-grid/)
-- [Img Shields](https://shields.io)
 - [Lucide Icons](https://lucide.dev/)
 - [Bootstrap Icons](https://icons.getbootstrap.com/)
+- [Markdown Badges](https://github.com/Ileriayo/markdown-badges/blob/master/README.md#-design)
+- [Badges 4 Markdown](https://github.com/alexandresanlim/Badges4-README.md-Profile)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
 [contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
 [contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
