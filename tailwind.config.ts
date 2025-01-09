@@ -1,36 +1,75 @@
 import type { Config } from "tailwindcss";
 
 export default {
-  content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
-  theme: {
-    extend: {
-      colors: {
-        "background": "var(--primary-background)",
-        "foreground": "var(--secondary-foreground)",
-        "primary": "var(--primary)",
-        "primary-lighter": "var(--primary-lighter)",
-        "primary-lightest": "var(--primary-lightest)",
-        "secondary": "var(--secondary)",
-        "secondary-lighter": "var(--secondary-lighter)",
-        "secondary-lightest": "var(--secondary-lightest)",
-        "success": "var(--success)",
-        "success-lighter": "var(--success-lighter)",
-        "success-lightest": "var(--success-lightest)",
-        "danger": "var(--danger)",
-        "danger-lighter": "var(--danger-lighter)",
-        "danger-lightest": "var(--danger-lightest)",
-        "tertiary": "var(--tertiary)",
-        "tertiary-lighter": "var(--tertiary-lighter)",
-        "text-color": "var(--text-color)",
-      },
-      transitionProperty: {
-        "opacity-position": "opacity, left, right, top, bottom",
-       }
+    darkMode: ["class"],
+    content: [
+        "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+        "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+        "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    ],
+    theme: {
+    	extend: {
+    		colors: {
+    			background: 'hsl(var(--background))',
+    			foreground: 'hsl(var(--foreground))',
+    			card: {
+    				DEFAULT: 'hsl(var(--card))',
+    				foreground: 'hsl(var(--card-foreground))'
+    			},
+    			popover: {
+    				DEFAULT: 'hsl(var(--popover))',
+    				foreground: 'hsl(var(--popover-foreground))'
+    			},
+    			primary: {
+    				DEFAULT: 'hsl(var(--primary))',
+    				foreground: 'hsl(var(--primary-foreground))'
+    			},
+    			secondary: {
+    				DEFAULT: 'hsl(var(--secondary))',
+    				foreground: 'hsl(var(--secondary-foreground))'
+    			},
+    			muted: {
+    				DEFAULT: 'hsl(var(--muted))',
+    				foreground: 'hsl(var(--muted-foreground))'
+    			},
+    			accent: {
+    				DEFAULT: 'hsl(var(--accent))',
+    				foreground: 'hsl(var(--accent-foreground))'
+    			},
+    			destructive: {
+    				DEFAULT: 'hsl(var(--destructive))',
+    				foreground: 'hsl(var(--destructive-foreground))'
+    			},
+    			border: 'hsl(var(--border))',
+    			input: 'hsl(var(--input))',
+    			ring: 'hsl(var(--ring))',
+    			chart: {
+    				'1': 'hsl(var(--chart-1))',
+    				'2': 'hsl(var(--chart-2))',
+    				'3': 'hsl(var(--chart-3))',
+    				'4': 'hsl(var(--chart-4))',
+    				'5': 'hsl(var(--chart-5))'
+    			},
+    			google: 'hsl(var(--google), <alpha-value>)',
+    			github: 'hsl(var(--github), <alpha-value>)',
+    			discord: 'hsl(var(--discord), <alpha-value>)',
+    			sidebar: {
+    				DEFAULT: 'hsl(var(--sidebar-background))',
+    				foreground: 'hsl(var(--sidebar-foreground))',
+    				primary: 'hsl(var(--sidebar-primary))',
+    				'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+    				accent: 'hsl(var(--sidebar-accent))',
+    				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+    				border: 'hsl(var(--sidebar-border))',
+    				ring: 'hsl(var(--sidebar-ring))'
+    			}
+    		},
+    		borderRadius: {
+    			lg: 'var(--radius)',
+    			md: 'calc(var(--radius) - 2px)',
+    			sm: 'calc(var(--radius) - 4px)'
+    		}
+    	}
     },
-  },
-  plugins: [],
+    plugins: [require("tailwindcss-animate"), "prettier-plugin-tailwindcss"],
 } satisfies Config;
