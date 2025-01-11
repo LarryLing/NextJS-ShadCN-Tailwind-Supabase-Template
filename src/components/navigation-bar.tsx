@@ -7,6 +7,7 @@ import { Button } from './ui/button'
 import { Bell, MenuIcon, PlusIcon, XIcon } from 'lucide-react'
 import { Separator } from './ui/separator'
 import Link from 'next/link'
+import { signout } from '@/lib/actions'
 
 const NavbarItems = [
     {
@@ -31,14 +32,17 @@ const SidebarUserItems = [
     {
         name: "Dashboard",
         href: "#",
+        onClick: () => {},
     },
     {
         name: "Settings",
         href: "#",
+        onClick: () => {},
     },
     {
         name: "Sign Out",
         href: "#",
+        onClick: signout,
     }
 ]
 
@@ -156,11 +160,11 @@ export default function NavigationBar() {
                         SidebarUserItems.map(item => {
                             return (
                                 <NavigationMenuItem key={ item.name }>
-                                    <Link href={ item.href } legacyBehavior passHref>
-                                        <NavigationMenuLink className={ `${ navigationMenuTriggerStyle() } font-normal` }>
+                                    <NavigationMenuLink onClick={ item.onClick } className={ `${ navigationMenuTriggerStyle() } font-normal` }>
+                                    {/* <Link href={ item.href } legacyBehavior passHref> */}
                                             { item.name }
-                                        </NavigationMenuLink>
-                                    </Link>
+                                    {/* </Link> */}
+                                    </NavigationMenuLink>
                                 </NavigationMenuItem>
                             )
                         })
