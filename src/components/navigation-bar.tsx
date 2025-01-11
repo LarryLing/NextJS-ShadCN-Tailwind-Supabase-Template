@@ -1,15 +1,15 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle } from './ui/navigation-menu'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from './ui/button'
 import { Bell, MenuIcon, PlusIcon, XIcon } from 'lucide-react'
 import { Separator } from './ui/separator'
-import Link from 'next/link'
 import { signout } from '@/lib/actions'
 import { createClient } from '@/lib/supabase/client'
-import { User, UserResponse } from '@supabase/supabase-js'
+import { User } from '@supabase/supabase-js'
 
 const NavbarItems = [
     {
@@ -32,8 +32,8 @@ const NavbarItems = [
 
 const SidebarUserItems = [
     {
-        name: "Settings",
-        href: "#",
+        name: "My Profile",
+        href: "/account",
         onClick: () => {},
     },
     {
@@ -169,7 +169,7 @@ export default function NavigationBar() {
                                     SidebarUserItems.map(item => {
                                         return (
                                             <NavigationMenuItem key={ item.name }>
-                                                <NavigationMenuLink onClick={ item.onClick } className={ `${ navigationMenuTriggerStyle() } hover:cursor-pointer font-normal` }>
+                                                <NavigationMenuLink href={ item.href } onClick={ item.onClick } className={ `${ navigationMenuTriggerStyle() } hover:cursor-pointer font-normal` }>
                                                     { item.name }
                                                 </NavigationMenuLink>
                                             </NavigationMenuItem>

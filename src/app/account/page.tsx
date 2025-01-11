@@ -1,3 +1,3 @@
 export default function AccountPage() {
-    return <p>Successfully, logged in!</p>
+    return <p>My Account</p>
 }

@@ -66,30 +66,32 @@ export async function loginWithGoogle() {
     const supabase = await createClient()
 
     const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'github'
+        provider: "google"
     })
 
     if (error) {
         redirect("/error")
+    } else {
+        return redirect(data.url)
     }
-
-    revalidatePath("/", "layout")
-    redirect("/account")
 }
 
 export async function loginWithDiscord() {
     const supabase = await createClient()
+    const origin = (await headers()).get("origin")
 
     const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'discord'
+        provider: "discord",
+        options: {
+            redirectTo: `${ origin }/auth/callback`,
+        },
     })
 
     if (error) {
         redirect("/error")
+    } else {
+        return redirect(data.url)
     }
-
-    revalidatePath("/", "layout")
-    redirect("/account")
 }
 
 export async function loginWithGithub() {
@@ -97,7 +99,7 @@ export async function loginWithGithub() {
     const origin = (await headers()).get("origin")
 
     const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'github',
+        provider: "github",
         options: {
             redirectTo: `${ origin }/auth/callback`,
         }
@@ -116,9 +118,9 @@ export async function signout() {
     const { error } = await supabase.auth.signOut()
 
     if (error) {
-        redirect('/error')
+        redirect("/error")
     }
 
-    revalidatePath('/', 'layout')
-    redirect('/account')
+    revalidatePath("/", "layout")
+    redirect("/")
 }
