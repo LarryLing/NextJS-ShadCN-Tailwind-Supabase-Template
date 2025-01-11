@@ -2,9 +2,9 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from './supabase/server'
 import { FormState, LoginFormSchema, SignupFormSchema } from '@/lib/definitions'
+import { headers } from 'next/headers'
 
 export async function signup(formState: FormState, formData: FormData) {
     const supabase = await createClient()
@@ -29,7 +29,7 @@ export async function signup(formState: FormState, formData: FormData) {
     })
 
     if (error) {
-        redirect('/error')
+        redirect("/login")
     }
 
     revalidatePath('/', 'layout')
@@ -55,7 +55,7 @@ export async function login(formState: FormState, formData: FormData) {
     const { error } = await supabase.auth.signInWithPassword(validatedFields.data)
 
     if (error) {
-        redirect("/error")
+        redirect("/login")
     }
 
     revalidatePath('/', 'layout')
@@ -94,17 +94,20 @@ export async function loginWithDiscord() {
 
 export async function loginWithGithub() {
     const supabase = await createClient()
+    const origin = (await headers()).get("origin")
 
     const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'github'
+        provider: 'github',
+        options: {
+            redirectTo: `${ origin }/auth/callback`,
+        }
     })
 
     if (error) {
         redirect("/error")
+    } else {
+        return redirect(data.url)
     }
-
-    revalidatePath("/", "layout")
-    redirect("/account")
 }
 
 export async function signout() {
