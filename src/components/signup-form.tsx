@@ -27,12 +27,12 @@ export function SignupForm({ className, ...props }: React.ComponentPropsWithoutR
                     <div className="flex flex-col gap-6">
                         <div className="grid gap-2">
                             <Label htmlFor="email">Email</Label>
-                            <Input id="email" name="email" type="text" required/>
+                            <Input id="email" name="email" type="text"/>
                             { state?.errors?.email && <p className="text-sm text-destructive">{ state.errors.email }</p> }
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="password">Password</Label>
-                            <Input id="password" name="password" type="password" required />
+                            <Input id="password" name="password" type="password"/>
                             { 
                                 state?.errors?.password && (
                                 <div className="text-sm text-destructive">
@@ -51,7 +51,7 @@ export function SignupForm({ className, ...props }: React.ComponentPropsWithoutR
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="confirmPassword">Confirm Password</Label>
-                            <Input id="confirmPassword" name="confirmPassword" type="password" required />
+                            <Input id="confirmPassword" name="confirmPassword" type="password"/>
                             { state?.errors?.confirmPassword && <p className="text-sm text-destructive">{ state.errors.confirmPassword }</p> }
                         </div>
                         <Button type="submit" disabled={ pending } className="w-full">

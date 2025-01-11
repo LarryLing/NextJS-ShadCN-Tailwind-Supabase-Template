@@ -161,9 +161,7 @@ export default function NavigationBar() {
                             return (
                                 <NavigationMenuItem key={ item.name }>
                                     <NavigationMenuLink onClick={ item.onClick } className={ `${ navigationMenuTriggerStyle() } font-normal` }>
-                                    {/* <Link href={ item.href } legacyBehavior passHref> */}
-                                            { item.name }
-                                    {/* </Link> */}
+                                        { item.name }
                                     </NavigationMenuLink>
                                 </NavigationMenuItem>
                             )

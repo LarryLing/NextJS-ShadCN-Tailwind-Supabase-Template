@@ -14,7 +14,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
     const [state, action, pending] = useActionState(login, undefined);
 
     return (
-        <div className={ cn("flex flex-col gap-6", className) } {...props}>
+        <div className={ cn("flex flex-col gap-6", className) } { ...props }>
             <Card>
                 <CardHeader>
                     <CardTitle className="text-2xl">Login</CardTitle>
@@ -27,7 +27,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                     <div className="flex flex-col gap-6">
                         <div className="grid gap-2">
                             <Label htmlFor="email">Email</Label>
-                            <Input id="email" name="email" type="email" required/>
+                            <Input id="email" name="email" type="text"/>
                             { state?.errors?.email && <p className="text-sm text-destructive">{ state.errors.email }</p>  }
                         </div>  
                         <div className="grid gap-2">
@@ -37,7 +37,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                                     Forgot your password?
                                 </a>
                             </div>
-                            <Input id="password" name="password" type="password" required />
+                            <Input id="password" name="password" type="password"/>
                             { state?.errors?.password && <p className="text-sm text-destructive">{ state.errors.password }</p>  }
                         </div>
                         <Button type="submit" disabled={ pending } className="w-full">
