@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "./ui/separator";
 import { DiscordIcon, GithubIcon, GoogleIcon } from "./icons/icon";
 import { useActionState } from "react";
 import { login, loginWithDiscord, loginWithGithub, loginWithGoogle } from "@/lib/actions";
+import { Separator } from "./ui/separator";
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
     const [state, action, pending] = useActionState(login, undefined);
@@ -23,7 +23,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                <form action={ action }>
+                <form action={ action } className="text-sm">
                     <div className="flex flex-col gap-6">
                         <div className="grid gap-2">
                             <Label htmlFor="email">Email</Label>
@@ -52,19 +52,16 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                             </div>
                         </div>
                         <div className="flex justify-center items-center">
-                            <Separator className="w-28"/><span className="mx-2">or</span><Separator className="w-28"/>
+                            <Separator className="w-24"/><span className="mx-2">Or continue with</span><Separator className="w-24"/>
                         </div>
-                        <div className="flex flex-col gap-2">
-                            <Button onClick={ loginWithGoogle } disabled={ pending } className="w-full bg-google hover:bg-google/90 text-background">
-                                Login With Google
+                        <div className="flex gap-2">
+                            <Button onClick={ loginWithGoogle } disabled={ pending } className="flex-1 bg-google hover:bg-google/90 text-background">
                                 <GoogleIcon className="size-6"/>
                             </Button>
-                            <Button onClick={ loginWithDiscord } disabled={ pending } className="w-full bg-discord hover:bg-discord/90 text-background">
-                                Login With Discord
+                            <Button onClick={ loginWithDiscord } disabled={ pending } className="flex-1 bg-discord hover:bg-discord/90 text-background">
                                 <DiscordIcon className="size-6"/>
                             </Button>
-                            <Button onClick={ loginWithGithub } disabled={ pending } className="w-full bg-github hover:bg-github/90 text-background">
-                                Login With Github
+                            <Button onClick={ loginWithGithub } disabled={ pending } className="flex-1 bg-github hover:bg-github/90 text-background">
                                 <GithubIcon className="size-6"/>
                             </Button>
                         </div>

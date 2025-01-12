@@ -9,14 +9,13 @@ import { headers } from 'next/headers'
 export async function signup(formState: FormState, formData: FormData) {
     const supabase = await createClient()
 
-    // Validate form fields
     const validatedFields = SignupFormSchema.safeParse({
+        displayName: formData.get("displayName"),
         email: formData.get("email"),
         password: formData.get("password"),
         confirmPassword: formData.get("confirmPassword")
     })
 
-    // If any form fields are invalid, return early
     if (!validatedFields.success) {
         return {
             errors: validatedFields.error.flatten().fieldErrors,
@@ -26,10 +25,16 @@ export async function signup(formState: FormState, formData: FormData) {
     const { error } = await supabase.auth.signUp({
         email: validatedFields.data.email,
         password: validatedFields.data.password,
+        options: {
+            data: {
+                display_name: validatedFields.data.displayName,
+            },
+        },
     })
 
     if (error) {
-        redirect("/login")
+        throw new Error(error.message)
+        redirect("/signup")
     }
 
     revalidatePath('/', 'layout')
@@ -39,13 +44,11 @@ export async function signup(formState: FormState, formData: FormData) {
 export async function login(formState: FormState, formData: FormData) {
     const supabase = await createClient()
 
-     // Validate form fields
     const validatedFields = LoginFormSchema.safeParse({
         email: formData.get("email"),
         password: formData.get("password"),
     })
  
-    // If any form fields are invalid, return early
     if (!validatedFields.success) {
         return {
             errors: validatedFields.error.flatten().fieldErrors,
@@ -66,7 +69,10 @@ export async function loginWithGoogle() {
     const supabase = await createClient()
 
     const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "google"
+        provider: "google",
+        options: {
+            redirectTo: `${ origin }/auth/callback`,
+        },
     })
 
     if (error) {
