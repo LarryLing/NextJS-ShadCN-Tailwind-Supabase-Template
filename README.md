@@ -36,7 +36,7 @@
   <h3 align="center">NextJS + Tailwind Template</h3>
 
   <p align="center">
-    A template repository including a Navbar, Login, and Sign Up page.
+    A template repository including a navbar, profile and setting page templates, error handling, and login and signup functionality
     <br />
     <br />
     <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
@@ -88,8 +88,6 @@ Here's why:
 - You should implement DRY principles to the rest of your life :smile:
 
 Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
-
-Use the `BLANK_README.md` to get started.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -164,14 +162,18 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 ## Roadmap
 
-- [ ] Add navbar popovers
-  - [ ] User popover
-  - [ ] Avatar popover
+- [x] Add navbar popovers
+  - [x] User popover
+  - [x] Avatar popover
 - [ ] Add waiting page for user confirmation
+  - [ ] Add functions and triggers for OAuth providers
 - [ ] Add error handling
   - [ ] Add error page(s)
+  - [ ] Sign out page refresh
 - [ ] Add profile page template
 - [ ] Add settings page template
+- [ ] Implement shadow for suspense rendering
+- [ ] Update README with instructions for use
 
 See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
 

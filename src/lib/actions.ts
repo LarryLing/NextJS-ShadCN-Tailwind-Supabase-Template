@@ -62,7 +62,7 @@ export async function login(formState: FormState, formData: FormData) {
     }
 
     revalidatePath('/', 'layout')
-    redirect('/account')
+    redirect('/')
 }
 
 export async function loginWithGoogle() {
