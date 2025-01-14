@@ -119,9 +119,9 @@ To get a local copy up and running follow these simple example steps.
 This is an example of how to list things you need to use the software and how to install them.
 
 - npm
-  ```sh
-  npm install npm@latest -g
-  ```
+    ```sh
+    npm install npm@latest -g
+    ```
 
 ### Installation
 
@@ -129,22 +129,22 @@ _Below is an example of how you can instruct your audience on installing and set
 
 1. Get a free API Key at [https://example.com](https://example.com)
 2. Clone the repo
-   ```sh
-   git clone https://github.com/LarryLing/NextJS-Tailwind-Template.git
-   ```
+    ```sh
+    git clone https://github.com/LarryLing/NextJS-Tailwind-Template.git
+    ```
 3. Install NPM packages
-   ```sh
-   npm install
-   ```
+    ```sh
+    npm install
+    ```
 4. Enter your API in `config.js`
-   ```js
-   const API_KEY = "ENTER YOUR API";
-   ```
+    ```js
+    const API_KEY = "ENTER YOUR API"
+    ```
 5. Change git remote url to avoid accidental pushes to base project
-   ```sh
-   git remote set-url origin github_username/NextJS-Tailwind-Template
-   git remote -v # confirm the changes
-   ```
+    ```sh
+    git remote set-url origin github_username/NextJS-Tailwind-Template
+    git remote -v # confirm the changes
+    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -163,13 +163,13 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 ## Roadmap
 
 - [x] Add navbar popovers
-  - [x] User popover
-  - [x] Avatar popover
+    - [x] User popover
+    - [x] Avatar popover
 - [ ] Add waiting page for user confirmation
-  - [ ] Add functions and triggers for OAuth providers
+    - [ ] Add functions and triggers for OAuth providers
 - [ ] Add error handling
-  - [ ] Add error page(s)
-  - [ ] Sign out page refresh
+    - [ ] Add error page(s)
+    - [ ] Sign out page refresh
 - [ ] Add profile page template
 - [ ] Add settings page template
 - [ ] Implement shadow for suspense rendering

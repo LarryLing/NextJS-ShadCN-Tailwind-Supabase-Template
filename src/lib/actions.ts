@@ -1,132 +1,134 @@
-'use server'
+"use server"
 
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
-import { createClient } from './supabase/server'
-import { FormState, LoginFormSchema, SignupFormSchema } from '@/lib/definitions'
-import { headers } from 'next/headers'
+import { revalidatePath } from "next/cache"
+import { redirect } from "next/navigation"
+import { createClient } from "./supabase/server"
+import { FormState, LoginFormSchema, SignupFormSchema } from "@/lib/definitions"
+import { headers } from "next/headers"
 
 export async function signup(formState: FormState, formData: FormData) {
-    const supabase = await createClient()
+	const supabase = await createClient()
 
-    const validatedFields = SignupFormSchema.safeParse({
-        displayName: formData.get("displayName"),
-        email: formData.get("email"),
-        password: formData.get("password"),
-        confirmPassword: formData.get("confirmPassword")
-    })
+	const validatedFields = SignupFormSchema.safeParse({
+		displayName: formData.get("displayName"),
+		email: formData.get("email"),
+		password: formData.get("password"),
+		confirmPassword: formData.get("confirmPassword"),
+	})
 
-    if (!validatedFields.success) {
-        return {
-            errors: validatedFields.error.flatten().fieldErrors,
-        }
-    }
+	if (!validatedFields.success) {
+		return {
+			errors: validatedFields.error.flatten().fieldErrors,
+		}
+	}
 
-    const { error } = await supabase.auth.signUp({
-        email: validatedFields.data.email,
-        password: validatedFields.data.password,
-        options: {
-            data: {
-                display_name: validatedFields.data.displayName,
-            },
-        },
-    })
+	const { error } = await supabase.auth.signUp({
+		email: validatedFields.data.email,
+		password: validatedFields.data.password,
+		options: {
+			data: {
+				display_name: validatedFields.data.displayName,
+			},
+		},
+	})
 
-    if (error) {
-        throw new Error(error.message)
-        redirect("/signup")
-    }
+	if (error) {
+		throw new Error(error.message)
+		redirect("/signup")
+	}
 
-    revalidatePath('/', 'layout')
-    redirect('/account')
+	revalidatePath("/", "layout")
+	redirect("/account")
 }
 
 export async function login(formState: FormState, formData: FormData) {
-    const supabase = await createClient()
+	const supabase = await createClient()
 
-    const validatedFields = LoginFormSchema.safeParse({
-        email: formData.get("email"),
-        password: formData.get("password"),
-    })
- 
-    if (!validatedFields.success) {
-        return {
-            errors: validatedFields.error.flatten().fieldErrors,
-        }
-    }
+	const validatedFields = LoginFormSchema.safeParse({
+		email: formData.get("email"),
+		password: formData.get("password"),
+	})
 
-    const { error } = await supabase.auth.signInWithPassword(validatedFields.data)
+	if (!validatedFields.success) {
+		return {
+			errors: validatedFields.error.flatten().fieldErrors,
+		}
+	}
 
-    if (error) {
-        redirect("/login")
-    }
+	const { error } = await supabase.auth.signInWithPassword(
+		validatedFields.data,
+	)
 
-    revalidatePath('/', 'layout')
-    redirect('/')
+	if (error) {
+		redirect("/login")
+	}
+
+	revalidatePath("/", "layout")
+	redirect("/")
 }
 
 export async function loginWithGoogle() {
-    const supabase = await createClient()
+	const supabase = await createClient()
 
-    const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-            redirectTo: `${ origin }/auth/callback`,
-        },
-    })
+	const { data, error } = await supabase.auth.signInWithOAuth({
+		provider: "google",
+		options: {
+			redirectTo: `${origin}/auth/callback`,
+		},
+	})
 
-    if (error) {
-        redirect("/error")
-    } else {
-        return redirect(data.url)
-    }
+	if (error) {
+		redirect("/error")
+	} else {
+		return redirect(data.url)
+	}
 }
 
 export async function loginWithDiscord() {
-    const supabase = await createClient()
-    const origin = (await headers()).get("origin")
+	const supabase = await createClient()
+	const origin = (await headers()).get("origin")
 
-    const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "discord",
-        options: {
-            redirectTo: `${ origin }/auth/callback`,
-        },
-    })
+	const { data, error } = await supabase.auth.signInWithOAuth({
+		provider: "discord",
+		options: {
+			redirectTo: `${origin}/auth/callback`,
+		},
+	})
 
-    if (error) {
-        redirect("/error")
-    } else {
-        return redirect(data.url)
-    }
+	if (error) {
+		redirect("/error")
+	} else {
+		return redirect(data.url)
+	}
 }
 
 export async function loginWithGithub() {
-    const supabase = await createClient()
-    const origin = (await headers()).get("origin")
+	const supabase = await createClient()
+	const origin = (await headers()).get("origin")
 
-    const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "github",
-        options: {
-            redirectTo: `${ origin }/auth/callback`,
-        }
-    })
+	const { data, error } = await supabase.auth.signInWithOAuth({
+		provider: "github",
+		options: {
+			redirectTo: `${origin}/auth/callback`,
+		},
+	})
 
-    if (error) {
-        redirect("/error")
-    } else {
-        return redirect(data.url)
-    }
+	if (error) {
+		redirect("/error")
+	} else {
+		return redirect(data.url)
+	}
 }
 
 export async function signout() {
-    const supabase = await createClient()
+	const supabase = await createClient()
 
-    const { error } = await supabase.auth.signOut()
+	const { error } = await supabase.auth.signOut()
 
-    if (error) {
-        redirect("/error")
-    }
+	if (error) {
+		redirect("/error")
+	}
 
-    revalidatePath("/", "layout")
-    redirect("/")
+	revalidatePath("/", "layout")
+	redirect("/")
 }
