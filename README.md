@@ -168,7 +168,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 - [ ] Add error handling
     - [ ] Add error page(s)
     - [ ] Redirect user to signup page with an error if email is taken
-    - [ ] Sign out page refresh
+    - [x] Sign out page refresh
 - [ ] Add profile page template
 - [ ] Add settings page template
     - [ ] Enable users to upload custom profile pictures

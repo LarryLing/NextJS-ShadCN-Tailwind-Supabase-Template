@@ -34,8 +34,7 @@ export async function signup(formState: FormState, formData: FormData) {
 	})
 
 	if (error) {
-		throw new Error(error.message)
-		redirect("/signup")
+		redirect("/error")
 	}
 
 	revalidatePath("/", "layout")
@@ -52,7 +51,10 @@ export async function login(formState: FormState, formData: FormData) {
 
 	if (!validatedFields.success) {
 		return {
-			errors: validatedFields.error.flatten().fieldErrors,
+			errors: {
+				...validatedFields.error.flatten().fieldErrors,
+				invalidCredentials: undefined,
+			},
 		}
 	}
 
@@ -61,7 +63,13 @@ export async function login(formState: FormState, formData: FormData) {
 	)
 
 	if (error) {
-		redirect("/login")
+		return {
+			errors: {
+				email: undefined,
+				password: undefined,
+				invalidCredentials: ["Invalid credentials"],
+			},
+		}
 	}
 
 	revalidatePath("/", "layout")
