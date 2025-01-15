@@ -165,13 +165,13 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 - [x] Add navbar popovers
     - [x] User popover
     - [x] Avatar popover
-- [ ] Add waiting page for user confirmation
-    - [ ] Add functions and triggers for OAuth providers
 - [ ] Add error handling
     - [ ] Add error page(s)
+    - [ ] Redirect user to signup page with an error if email is taken
     - [ ] Sign out page refresh
 - [ ] Add profile page template
 - [ ] Add settings page template
+    - [ ] Enable users to upload custom profile pictures
 - [ ] Implement shadow for suspense rendering
 - [ ] Update README with instructions for use
 

@@ -1,19 +1,13 @@
-"use client"
-
 import NavigationBar from "@/components/blocks/navigation-bar/navigation-bar"
-import { Moon, MoonIcon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
-import { Button } from "@/components/ui/button"
+import { createClient } from "@/lib/supabase/server"
 
-export default function HomePage() {
-	const { setTheme } = useTheme()
+export default async function HomePage() {
+	const supabase = await createClient()
+	const userResponse = await supabase.auth.getUser()
 
 	return (
 		<div className="">
-			<NavigationBar />
-			<Button onClick={() => setTheme("light")}>Light</Button>
-			<Button onClick={() => setTheme("dark")}>Dark</Button>
-			<Button onClick={() => setTheme("system")}>System</Button>
+			<NavigationBar userResponse={userResponse} />
 		</div>
 	)
 }

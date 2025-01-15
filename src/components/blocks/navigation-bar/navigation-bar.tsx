@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { use, useEffect, useState } from "react"
 import Link from "next/link"
 import {
 	NavigationMenu,
@@ -13,11 +13,11 @@ import { Button } from "../../ui/button"
 import { MenuIcon, PlusIcon, XIcon } from "lucide-react"
 import { Separator } from "../../ui/separator"
 import { signout } from "@/lib/actions"
-import { createClient } from "@/lib/supabase/client"
-import { User } from "@supabase/supabase-js"
+import { User, UserResponse } from "@supabase/supabase-js"
 import AvatarPopover from "./avatar-popover"
 import NotificationPopover from "./notification-popover"
 import UserWidget from "./user-widget"
+import { createClient } from "@/lib/supabase/client"
 
 const NavbarItems = [
 	{
@@ -53,23 +53,13 @@ const UserSidebarItems = [
 	},
 ]
 
-export default function NavigationBar() {
-	const supabase = createClient()
+type NavigationBarProps = {
+	userResponse: UserResponse
+}
 
+export default function NavigationBar({ userResponse }: NavigationBarProps) {
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
-	const [user, setUser] = useState<User | null>(null)
-
-	useEffect(() => {
-		async function getUser() {
-			const session = await supabase.auth.getUser()
-
-			if (session.data.user) {
-				setUser(session.data.user)
-			}
-		}
-
-		getUser()
-	}, [])
+	const user = userResponse.data.user
 
 	return (
 		<NavigationMenu className="z-[9999] sticky text-nowrap max-w-none w-full">
@@ -122,7 +112,9 @@ export default function NavigationBar() {
 							</Link>
 							<div className="hidden md:flex justify-center items-center gap-4">
 								<NotificationPopover />
-								<AvatarPopover user={user} />
+								<AvatarPopover
+									userMetadata={user.user_metadata}
+								/>
 							</div>
 						</>
 					) : (

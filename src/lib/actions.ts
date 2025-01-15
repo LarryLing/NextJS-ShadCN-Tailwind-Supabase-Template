@@ -28,6 +28,7 @@ export async function signup(formState: FormState, formData: FormData) {
 		options: {
 			data: {
 				display_name: validatedFields.data.displayName,
+				profile_picture: "",
 			},
 		},
 	})
@@ -129,6 +130,6 @@ export async function signout() {
 		redirect("/error")
 	}
 
-	revalidatePath("/", "layout")
+	revalidatePath("/")
 	redirect("/")
 }

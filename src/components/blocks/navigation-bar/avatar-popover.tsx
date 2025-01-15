@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { User } from "@supabase/supabase-js"
+import { UserMetadata } from "@supabase/supabase-js"
 import { PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Popover } from "@radix-ui/react-popover"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -12,17 +12,17 @@ import Link from "next/link"
 import UserWidget from "./user-widget"
 
 type AvatarPopoverProps = {
-	user: User
+	userMetadata: UserMetadata
 }
 
-export default function AvatarPopover({ user }: AvatarPopoverProps) {
+export default function AvatarPopover({ userMetadata }: AvatarPopoverProps) {
 	return (
 		<Popover>
 			<PopoverTrigger>
 				<Avatar>
-					<AvatarImage src={user.user_metadata.avatar_url} />
+					<AvatarImage src={userMetadata.profile_picture} />
 					<AvatarFallback>
-						{user.user_metadata.display_name
+						{userMetadata.display_name
 							.substring(0, 2)
 							.toUpperCase()}
 					</AvatarFallback>
@@ -30,7 +30,7 @@ export default function AvatarPopover({ user }: AvatarPopoverProps) {
 			</PopoverTrigger>
 			<PopoverContent className="z-[9999] hidden md:flex flex-col gap-4 w-[300px] mt-1 mr-2">
 				<div>
-					<UserWidget userMetadata={user.user_metadata} />
+					<UserWidget userMetadata={userMetadata} />
 					<Link href="/account">
 						<Button
 							variant="outline"
@@ -43,7 +43,7 @@ export default function AvatarPopover({ user }: AvatarPopoverProps) {
 				<Separator className="w-full" />
 				<div>
 					<h3 className="font-bold">Account</h3>
-					<div>
+					<div className="mt-2">
 						<Link href="/settings">
 							<Button
 								variant="link"
