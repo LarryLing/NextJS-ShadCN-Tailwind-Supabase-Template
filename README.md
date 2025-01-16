@@ -169,12 +169,11 @@ _For more examples, please refer to the [Documentation](https://example.com)_
     - [x] Add error page(s)
     - [x] Redirect user to signup page with an error if email is taken
     - [x] Sign out page refresh
-- [ ] Add user credential updates
-    - [ ] Password recovery
-    - [ ] Email Updates
 - [ ] Add profile page template
 - [ ] Add settings page template
     - [ ] Enable users to upload custom profile pictures
+    - [ ] Password recovery
+    - [ ] Email Updates
 - [ ] Implement shadow for suspense rendering
 - [ ] Update README with instructions for use
 
