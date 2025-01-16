@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import ErrorCard from "@/components/blocks/error-card/error-card"
 
 export default function ErrorPage({
 	error,
@@ -10,15 +10,11 @@ export default function ErrorPage({
 	reset: () => void
 }) {
 	return (
-		<>
-			<p>Sorry, something went wrong</p>
-			{error.message && <p>{error.message}</p>}
-			<Button
-				variant="default"
-				onClick={reset}
-			>
-				Try again
-			</Button>
-		</>
+		<div className="flex justify-center items-center h-screen w-screen">
+			<ErrorCard
+				error={error}
+				reset={reset}
+			/>
+		</div>
 	)
 }

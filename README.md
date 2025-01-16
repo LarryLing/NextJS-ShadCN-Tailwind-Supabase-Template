@@ -165,10 +165,13 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 - [x] Add navbar popovers
     - [x] User popover
     - [x] Avatar popover
-- [ ] Add error handling
-    - [ ] Add error page(s)
-    - [ ] Redirect user to signup page with an error if email is taken
+- [x] Add error handling
+    - [x] Add error page(s)
+    - [x] Redirect user to signup page with an error if email is taken
     - [x] Sign out page refresh
+- [ ] Add user credential updates
+    - [ ] Password recovery
+    - [ ] Email Updates
 - [ ] Add profile page template
 - [ ] Add settings page template
     - [ ] Enable users to upload custom profile pictures

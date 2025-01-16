@@ -3,7 +3,13 @@
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { createClient } from "./supabase/server"
-import { FormState, LoginFormSchema, SignupFormSchema } from "@/lib/definitions"
+import {
+	ForgotPasswordFormSchema,
+	FormState,
+	LoginFormSchema,
+	ResetPasswordFormSchema,
+	SignupFormSchema,
+} from "@/lib/definitions"
 import { headers } from "next/headers"
 
 export async function signup(formState: FormState, formData: FormData) {
@@ -22,7 +28,25 @@ export async function signup(formState: FormState, formData: FormData) {
 		}
 	}
 
-	const { error } = await supabase.auth.signUp({
+	const { data: emailExists, error: emailExistsError } = await supabase
+		.from("profiles")
+		.select("email")
+		.eq("email", validatedFields.data.email)
+		.maybeSingle()
+
+	if (emailExistsError) {
+		throw new Error(emailExistsError.message)
+	}
+
+	if (emailExists === null) {
+		return {
+			errors: {
+				email: ["Email is already in use"],
+			},
+		}
+	}
+
+	const { error: signupError } = await supabase.auth.signUp({
 		email: validatedFields.data.email,
 		password: validatedFields.data.password,
 		options: {
@@ -33,8 +57,8 @@ export async function signup(formState: FormState, formData: FormData) {
 		},
 	})
 
-	if (error) {
-		throw new Error(error.message)
+	if (signupError) {
+		throw new Error(signupError.message)
 	}
 
 	revalidatePath("/", "layout")
@@ -142,4 +166,52 @@ export async function signout() {
 
 	revalidatePath("/")
 	redirect("/")
+}
+
+export async function sendEmailReset(formState: FormState, formData: FormData) {
+	const supabase = await createClient()
+
+	const validatedFields = ForgotPasswordFormSchema.safeParse({
+		email: formData.get("email"),
+	})
+
+	if (!validatedFields.success) {
+		return {
+			errors: validatedFields.error.flatten().fieldErrors,
+		}
+	}
+
+	const { error } = await supabase.auth.resetPasswordForEmail(
+		validatedFields.data.email,
+	)
+
+	if (error) {
+		throw new Error(error.message)
+	}
+}
+
+export async function resetPassword(formState: FormState, formData: FormData) {
+	const supabase = await createClient()
+
+	const validatedFields = ResetPasswordFormSchema.safeParse({
+		password: formData.get("password"),
+		confirmPassword: formData.get("confirmPassword"),
+	})
+
+	if (!validatedFields.success) {
+		return {
+			errors: validatedFields.error.flatten().fieldErrors,
+		}
+	}
+
+	const { data, error } = await supabase.auth.updateUser({
+		password: validatedFields.data.password,
+	})
+
+	if (error) {
+		throw new Error(error.message)
+	}
+
+	// revalidatePath("/")
+	// redirect("/login")
 }
