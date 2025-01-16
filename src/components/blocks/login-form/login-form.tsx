@@ -46,11 +46,6 @@ export function LoginForm({
 					>
 						<div className="flex flex-col gap-6">
 							<div className="grid gap-2">
-								{state?.errors?.invalidCredentials && (
-									<p className="text-sm text-destructive">
-										{state.errors.invalidCredentials}
-									</p>
-								)}
 								<Label htmlFor="email">Email</Label>
 								<Input
 									id="email"
@@ -81,6 +76,11 @@ export function LoginForm({
 								{state?.errors?.password && (
 									<p className="text-sm text-destructive">
 										{state.errors.password}
+									</p>
+								)}
+								{state?.errors?.invalidCredentials && (
+									<p className="text-sm text-destructive">
+										{state.errors.invalidCredentials}
 									</p>
 								)}
 							</div>

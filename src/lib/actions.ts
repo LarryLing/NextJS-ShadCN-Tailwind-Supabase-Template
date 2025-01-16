@@ -34,7 +34,7 @@ export async function signup(formState: FormState, formData: FormData) {
 	})
 
 	if (error) {
-		redirect("/error")
+		throw new Error(error.message)
 	}
 
 	revalidatePath("/", "layout")
@@ -62,14 +62,16 @@ export async function login(formState: FormState, formData: FormData) {
 		validatedFields.data,
 	)
 
-	if (error) {
+	if (error?.code === "invalid_credentials") {
 		return {
 			errors: {
 				email: undefined,
 				password: undefined,
-				invalidCredentials: ["Invalid credentials"],
+				invalidCredentials: ["Incorrect username or password"],
 			},
 		}
+	} else if (error?.status && error.status >= 500) {
+		throw new Error(error.message)
 	}
 
 	revalidatePath("/", "layout")
@@ -87,10 +89,10 @@ export async function loginWithGoogle() {
 	})
 
 	if (error) {
-		redirect("/error")
-	} else {
-		return redirect(data.url)
+		throw new Error(error.message)
 	}
+
+	redirect(data.url)
 }
 
 export async function loginWithDiscord() {
@@ -105,10 +107,10 @@ export async function loginWithDiscord() {
 	})
 
 	if (error) {
-		redirect("/error")
-	} else {
-		return redirect(data.url)
+		throw new Error(error.message)
 	}
+
+	redirect(data.url)
 }
 
 export async function loginWithGithub() {
@@ -123,10 +125,10 @@ export async function loginWithGithub() {
 	})
 
 	if (error) {
-		redirect("/error")
-	} else {
-		return redirect(data.url)
+		throw new Error(error.message)
 	}
+
+	redirect(data.url)
 }
 
 export async function signout() {
@@ -135,7 +137,7 @@ export async function signout() {
 	const { error } = await supabase.auth.signOut()
 
 	if (error) {
-		redirect("/error")
+		throw new Error(error.message)
 	}
 
 	revalidatePath("/")
