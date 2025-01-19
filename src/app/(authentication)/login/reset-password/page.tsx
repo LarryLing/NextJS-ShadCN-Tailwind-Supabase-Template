@@ -1,4 +1,4 @@
-import ResetPasswordForm from "@/components/blocks/reset-password-form/reset-password-form"
+import ResetPasswordForm from "@/app/(authentication)/login/reset-password/(ui-blocks)/reset-password-form"
 import React from "react"
 
 export default function ResetPasswordPage() {

@@ -4,11 +4,12 @@ import React from "react"
 
 type UserWidgetProps = {
 	userMetadata: UserMetadata
+    className?: string
 }
 
-export default function UserWidget({ userMetadata }: UserWidgetProps) {
+export default function UserWidget({ userMetadata, className}: UserWidgetProps) {
 	return (
-		<div className="flex justify-start items-center">
+		<div className={`flex justify-start items-center ${className}`}>
 			<Avatar>
 				<AvatarImage src={userMetadata.profile_picture} />
 				<AvatarFallback>

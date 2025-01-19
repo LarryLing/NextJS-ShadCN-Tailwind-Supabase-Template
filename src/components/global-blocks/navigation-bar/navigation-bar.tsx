@@ -1,6 +1,6 @@
 "use client"
 
-import React, { use, useEffect, useState } from "react"
+import React, { useState } from "react"
 import Link from "next/link"
 import {
 	NavigationMenu,
@@ -10,14 +10,14 @@ import {
 	navigationMenuTriggerStyle,
 } from "../../ui/navigation-menu"
 import { Button } from "../../ui/button"
-import { MenuIcon, PlusIcon, XIcon } from "lucide-react"
+import { LogIn, MenuIcon, PlusIcon, Settings, User, XIcon } from "lucide-react"
 import { Separator } from "../../ui/separator"
 import { signout } from "@/lib/actions"
-import { User, UserResponse } from "@supabase/supabase-js"
+import { UserResponse } from "@supabase/supabase-js"
 import AvatarPopover from "./avatar-popover"
-import NotificationPopover from "./notification-popover"
+import ThemeDropdown from "./theme-dropdown"
 import UserWidget from "./user-widget"
-import { createClient } from "@/lib/supabase/client"
+import SettingsDialog from "./settings-dialog"
 
 const NavbarItems = [
 	{
@@ -40,16 +40,12 @@ const NavbarItems = [
 
 const UserSidebarItems = [
 	{
-		name: "My Profile",
-		href: "/account",
+		name: "Settings",
+		href: "/settings",
 	},
 	{
 		name: "Notifications",
 		href: "/notifications",
-	},
-	{
-		name: "Settings",
-		href: "/settings",
 	},
 ]
 
@@ -62,8 +58,8 @@ export default function NavigationBar({ userResponse }: NavigationBarProps) {
 	const user = userResponse.data.user
 
 	return (
-		<NavigationMenu className="z-[9999] sticky text-nowrap max-w-none w-full">
-			<div className="z-[9999] w-full h-[80px] pl-6 pr-4 md:pr-6 flex justify-between items-center border-b-[1px] border-border">
+		<NavigationMenu className="z-[9998] sticky text-nowrap max-w-none w-full">
+			<div className="z-[9998] w-full h-[80px] pl-6 pr-4 md:pr-6 flex justify-between items-center border-b-[1px] border-border">
 				<div className="flex justify-start items-center">
 					<Link
 						href="/"
@@ -111,7 +107,6 @@ export default function NavigationBar({ userResponse }: NavigationBarProps) {
 								</Button>
 							</Link>
 							<div className="hidden md:flex justify-center items-center gap-4">
-								<NotificationPopover />
 								<AvatarPopover
 									userMetadata={user.user_metadata}
 								/>
@@ -177,35 +172,22 @@ export default function NavigationBar({ userResponse }: NavigationBarProps) {
 				</NavigationMenuList>
 				{user && (
 					<>
-						<div className="mx-2">
+						<div className="px-2 pb-4">
 							<Separator className="w-full" />
 						</div>
-						<div className="pl-6 pr-4 py-4">
-							<UserWidget userMetadata={user.user_metadata} />
-							<NavigationMenuList className="flex flex-col items-start gap-2 mt-2">
-								{UserSidebarItems.map((item) => {
-									return (
-										<NavigationMenuItem key={item.name}>
-											<Link href={item.href}>
-												<Button
-													variant="link"
-													className="block px-0"
-												>
-													{item.name}
-												</Button>
-											</Link>
-										</NavigationMenuItem>
-									)
-								})}
-								<Button
-									variant="link"
-									onClick={signout}
-									className="px-0"
-								>
-									Sign Out
-								</Button>
-							</NavigationMenuList>
-						</div>
+                        <UserWidget userMetadata={user.user_metadata} className="px-6 py-4"/>
+                        <div className="flex flex-col items-start gap-2 px-3 pb-4">
+                            <ThemeDropdown />
+                            <SettingsDialog />
+                            <Button
+                                variant="ghost"
+                                onClick={signout}
+                                className="block px-3"
+                            >
+                                <LogIn className="inline h-[1.2rem] w-[1.2rem] mr-2"/>
+                                <span>Sign Out</span>
+                            </Button>
+                        </div>
 					</>
 				)}
 			</div>

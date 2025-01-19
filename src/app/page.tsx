@@ -1,4 +1,4 @@
-import NavigationBar from "@/components/blocks/navigation-bar/navigation-bar"
+import NavigationBar from "@/components/global-blocks/navigation-bar/navigation-bar"
 import { createClient } from "@/lib/supabase/server"
 
 export default async function HomePage() {

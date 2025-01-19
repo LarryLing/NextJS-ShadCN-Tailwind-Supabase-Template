@@ -62,7 +62,7 @@ export async function signup(formState: FormState, formData: FormData) {
 	}
 
 	revalidatePath("/", "layout")
-	redirect("/account")
+	redirect("/")
 }
 
 export async function login(formState: FormState, formData: FormData) {
@@ -212,6 +212,6 @@ export async function resetPassword(formState: FormState, formData: FormData) {
 		throw new Error(error.message)
 	}
 
-	// revalidatePath("/")
-	// redirect("/login")
+	revalidatePath("/")
+	redirect("/login")
 }
