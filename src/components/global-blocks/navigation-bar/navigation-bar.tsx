@@ -54,8 +54,16 @@ type NavigationBarProps = {
 }
 
 export default function NavigationBar({ userResponse }: NavigationBarProps) {
-	const [isMenuOpen, setIsMenuOpen] = useState(false)
-	const user = userResponse.data.user
+    const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useState(false)
+    const [isAvatarPopoverOpen, setIsAvatarPopoverOpen] = useState(false)
+    const user = userResponse.data.user
+
+    function openSettingsDialog() {
+        if (isMenuOpen) setIsMenuOpen(false)
+        if (isAvatarPopoverOpen) setIsAvatarPopoverOpen(false)
+        setIsSettingsDialogOpen(true)
+    }
 
 	return (
 		<NavigationMenu className="z-[9998] sticky text-nowrap max-w-none w-full">
@@ -108,7 +116,8 @@ export default function NavigationBar({ userResponse }: NavigationBarProps) {
 							</Link>
 							<div className="hidden md:flex justify-center items-center gap-4">
 								<AvatarPopover
-									userMetadata={user.user_metadata}
+                                    userMetadata={user.user_metadata}
+                                    openSettingsDialog={openSettingsDialog}
 								/>
 							</div>
 						</>
@@ -178,7 +187,14 @@ export default function NavigationBar({ userResponse }: NavigationBarProps) {
                         <UserWidget userMetadata={user.user_metadata} className="px-6 pb-4"/>
                         <div className="space-y-2 px-3 pb-4">
                             <ThemeDropdown />
-                            <SettingsDialog userMetadata={user.user_metadata}/>
+                            <Button
+                                variant="ghost"
+                                className="block px-3"
+                                onClick={() => openSettingsDialog()}
+                            >
+                                <Settings className="inline h-[1.2rem] w-[1.2rem] mr-2"/>
+                                <span>Settings</span>
+                            </Button>
                             <Button
                                 variant="ghost"
                                 onClick={signout}
@@ -190,7 +206,8 @@ export default function NavigationBar({ userResponse }: NavigationBarProps) {
                         </div>
 					</>
 				)}
-			</div>
+            </div>
+            {user && <SettingsDialog userMetadata={user.user_metadata} isSettingsDialogOpen={isSettingsDialogOpen} setIsSettingsDialogOpen={setIsSettingsDialogOpen} />}
 		</NavigationMenu>
 	)
 }

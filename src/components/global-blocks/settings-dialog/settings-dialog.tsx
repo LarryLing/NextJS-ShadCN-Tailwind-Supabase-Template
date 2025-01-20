@@ -6,11 +6,8 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
 import React from 'react'
-import { Button } from '@/components/ui/button'
-import { Settings } from 'lucide-react'
 import { UserMetadata } from '@supabase/supabase-js'
 import EditProfileCard from './edit-profile-card'
 import UpdateEmailCard from './update-email-card'
@@ -18,22 +15,15 @@ import ChangePasswordCard from './change-password-card'
 import DeleteAccountCard from './delete-account-card'
 
 type SettingsDialogProps = {
-    userMetadata: UserMetadata
+    userMetadata: UserMetadata;
+    isSettingsDialogOpen: boolean;
+    setIsSettingsDialogOpen: (arg0: boolean) => void;
 }
 
-export default function SettingsDialog({ userMetadata }: SettingsDialogProps) {
+export default function SettingsDialog({ userMetadata, isSettingsDialogOpen, setIsSettingsDialogOpen }: SettingsDialogProps) {
     return (
-        <Dialog>
-            <DialogTrigger asChild>
-                <Button
-                    variant="ghost"
-                    className="block px-3"
-                >
-                    <Settings className="inline h-[1.2rem] w-[1.2rem] mr-2"/>
-                    <span>Settings</span>
-                </Button>
-            </DialogTrigger>
-            <DialogContent className="z-[9900] h-[600px] overflow-auto flex flex-col justify-start">
+        <Dialog open={isSettingsDialogOpen} onOpenChange={setIsSettingsDialogOpen}>
+            <DialogContent className="z-[9999] h-[600px] overflow-auto flex flex-col justify-start">
                 <DialogHeader>
                     <DialogTitle>Settings</DialogTitle>
                 </DialogHeader>

@@ -172,7 +172,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 - [ ] Add settings page template
     - [x] Create UI
     - [ ] Fix backdrop bug
-    - [ ] Close other UI on dialog open
+    - [x] Close other UI on dialog open
     - [ ] Enable users to upload custom profile pictures
     - [ ] Password recovery
     - [ ] Email Updates

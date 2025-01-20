@@ -8,16 +8,16 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { signout } from "@/lib/actions"
 import UserWidget from "./user-widget"
-import { LogOut } from "lucide-react"
+import { LogOut, Settings } from "lucide-react"
 import ThemeDropdown from "./theme-dropdown"
-import SettingsDialog from "../settings-dialog/settings-dialog"
 
 type AvatarPopoverProps = {
-	userMetadata: UserMetadata,
+    userMetadata: UserMetadata,
+    openSettingsDialog: () => void;
 }
 
-export default function AvatarPopover({ userMetadata }: AvatarPopoverProps) {
-	return (
+export default function AvatarPopover({ userMetadata, openSettingsDialog }: AvatarPopoverProps) {
+    return (
 		<Popover>
 			<PopoverTrigger>
 				<Avatar>
@@ -29,11 +29,18 @@ export default function AvatarPopover({ userMetadata }: AvatarPopoverProps) {
 					</AvatarFallback>
 				</Avatar>
 			</PopoverTrigger>
-			<PopoverContent className="z-[9500] hidden md:block mt-1 mr-2 p-0" hideWhenDetached>
+			<PopoverContent className="z-[9999] hidden md:block mt-1 mr-2 p-0" hideWhenDetached>
                 <UserWidget userMetadata={userMetadata} className="px-6 py-4"/>
 				<div className="px-3 pb-4 space-y-2">
                     <ThemeDropdown />
-                    <SettingsDialog userMetadata={userMetadata}/>
+                    <Button
+                        variant="ghost"
+                        className="block px-3"
+                        onClick={() => openSettingsDialog()}
+                    >
+                        <Settings className="inline h-[1.2rem] w-[1.2rem] mr-2"/>
+                        <span>Settings</span>
+                    </Button>
                 </div>
                 <div className="px-2 pb-4">
                     <Separator className="w-full" />
