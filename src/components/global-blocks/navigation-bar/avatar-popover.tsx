@@ -7,20 +7,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { signout } from "@/lib/actions"
-import Link from "next/link"
 import UserWidget from "./user-widget"
-import { useTheme } from "next-themes"
-import { LogOut, Settings } from "lucide-react"
+import { LogOut } from "lucide-react"
 import ThemeDropdown from "./theme-dropdown"
-import SettingsDialog from "./settings-dialog"
+import SettingsDialog from "../settings-dialog/settings-dialog"
 
 type AvatarPopoverProps = {
 	userMetadata: UserMetadata,
 }
 
 export default function AvatarPopover({ userMetadata }: AvatarPopoverProps) {
-    const { setTheme } = useTheme()
-
 	return (
 		<Popover>
 			<PopoverTrigger>
@@ -33,11 +29,11 @@ export default function AvatarPopover({ userMetadata }: AvatarPopoverProps) {
 					</AvatarFallback>
 				</Avatar>
 			</PopoverTrigger>
-			<PopoverContent className="z-[9998] hidden md:block mt-1 mr-2 p-0">
+			<PopoverContent className="z-[9500] hidden md:block mt-1 mr-2 p-0" hideWhenDetached>
                 <UserWidget userMetadata={userMetadata} className="px-6 py-4"/>
-				<div className="px-3 pb-4">
+				<div className="px-3 pb-4 space-y-2">
                     <ThemeDropdown />
-                    <SettingsDialog />
+                    <SettingsDialog userMetadata={userMetadata}/>
                 </div>
                 <div className="px-2 pb-4">
                     <Separator className="w-full" />

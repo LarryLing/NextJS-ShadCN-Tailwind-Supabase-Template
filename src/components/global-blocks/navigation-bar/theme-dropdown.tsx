@@ -18,10 +18,10 @@ export default function ThemeDropdown() {
                     <span>Set Theme</span>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent side="left" align="center" sideOffset={24} className="z-[9999] p-2">
-                <DropdownMenuItem onClick={ () => setTheme("light")}>Light</DropdownMenuItem>
-                <DropdownMenuItem onClick={ () => setTheme("dark")}>Dark</DropdownMenuItem>
-                <DropdownMenuItem onClick={ () => setTheme("system")}>System</DropdownMenuItem>
+            <DropdownMenuContent side="left" align="center" sideOffset={24}>
+                <DropdownMenuItem onClick={ () => setTheme("light")} className="hover:cursor-pointer">Light</DropdownMenuItem>
+                <DropdownMenuItem onClick={ () => setTheme("dark")} className="hover:cursor-pointer">Dark</DropdownMenuItem>
+                <DropdownMenuItem onClick={ () => setTheme("system")} className="hover:cursor-pointer">System</DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
 	)

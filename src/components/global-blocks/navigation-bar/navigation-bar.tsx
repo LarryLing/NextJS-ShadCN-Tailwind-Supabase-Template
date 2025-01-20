@@ -17,7 +17,7 @@ import { UserResponse } from "@supabase/supabase-js"
 import AvatarPopover from "./avatar-popover"
 import ThemeDropdown from "./theme-dropdown"
 import UserWidget from "./user-widget"
-import SettingsDialog from "./settings-dialog"
+import SettingsDialog from "../settings-dialog/settings-dialog"
 
 const NavbarItems = [
 	{
@@ -59,7 +59,7 @@ export default function NavigationBar({ userResponse }: NavigationBarProps) {
 
 	return (
 		<NavigationMenu className="z-[9998] sticky text-nowrap max-w-none w-full">
-			<div className="z-[9998] w-full h-[80px] pl-6 pr-4 md:pr-6 flex justify-between items-center border-b-[1px] border-border">
+			<div className="z-[9000] w-full h-[80px] pl-6 pr-4 md:pr-6 flex justify-between items-center border-b-[1px] border-border">
 				<div className="flex justify-start items-center">
 					<Link
 						href="/"
@@ -175,10 +175,10 @@ export default function NavigationBar({ userResponse }: NavigationBarProps) {
 						<div className="px-2 pb-4">
 							<Separator className="w-full" />
 						</div>
-                        <UserWidget userMetadata={user.user_metadata} className="px-6 py-4"/>
-                        <div className="flex flex-col items-start gap-2 px-3 pb-4">
+                        <UserWidget userMetadata={user.user_metadata} className="px-6 pb-4"/>
+                        <div className="space-y-2 px-3 pb-4">
                             <ThemeDropdown />
-                            <SettingsDialog />
+                            <SettingsDialog userMetadata={user.user_metadata}/>
                             <Button
                                 variant="ghost"
                                 onClick={signout}
