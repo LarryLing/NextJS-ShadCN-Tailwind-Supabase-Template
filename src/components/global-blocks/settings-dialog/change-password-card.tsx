@@ -4,36 +4,42 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import React from 'react'
+import { resetPassword } from '@/lib/actions'
+import React, { useActionState } from 'react'
 
 export default function ChangePasswordCard() {
+    const [state, action, pending] = useActionState(resetPassword, undefined)
+
     return (
-        <Card className="mt-4">
-            <form action="">
+        <form action={action}>
+            <Card className="mt-4">
                 <CardHeader>
-                    <CardTitle>Password</CardTitle>
+                    <CardTitle>Change Password</CardTitle>
                     <CardDescription>
-                        Change your password here. After saving, you'll be logged out.
+                        After saving, you'll be logged out.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
                     <div className="space-y-1">
-                        <Label htmlFor="current">Current Password</Label>
-                        <Input id="current" type="password" />
+                        <Label htmlFor="password">Current Password</Label>
+                        <Input id="password" name="password" type="password" />
+                        {state?.errors.password && <p className="text-sm text-destructive">{state.errors.password}</p>}
                     </div>
                     <div className="space-y-1">
-                        <Label htmlFor="new">New Password</Label>
-                        <Input id="new" type="password" />
+                        <Label htmlFor="newPassword">New Password</Label>
+                        <Input id="newPassword" name="newPassword" type="password" />
+                        {state?.errors.newPassword && <p className="text-sm text-destructive">{state.errors.newPassword}</p>}
                     </div>
                     <div className="space-y-1">
-                        <Label htmlFor="confirm">Confirm Password</Label>
-                        <Input id="confirm" type="password" />
+                        <Label htmlFor="confirmPassword">Confirm Password</Label>
+                        <Input id="confirmPassword" name="confirmPassword" type="password" />
+                        {state?.errors.confirmPassword && <p className="text-sm text-destructive">{state.errors.confirmPassword}</p>}
                     </div>
                 </CardContent>
                 <CardFooter>
-                    <Button type="submit">Save Password</Button>
+                    <Button type="submit" disabled={pending}>Update Password</Button>
                 </CardFooter>
-            </form>
-        </Card>
+            </Card>
+        </form>
     )
 }

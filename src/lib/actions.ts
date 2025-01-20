@@ -7,8 +7,10 @@ import {
 	ForgotPasswordFormSchema,
 	FormState,
 	LoginFormSchema,
-	ResetPasswordFormSchema,
+	EmailFormSchema,
 	SignupFormSchema,
+    ChangePasswordFormScheme,
+    EditProfileFormSchema,
 } from "@/lib/definitions"
 import { headers } from "next/headers"
 
@@ -75,10 +77,7 @@ export async function login(formState: FormState, formData: FormData) {
 
 	if (!validatedFields.success) {
 		return {
-			errors: {
-				...validatedFields.error.flatten().fieldErrors,
-				invalidCredentials: undefined,
-			},
+			errors: validatedFields.error.flatten().fieldErrors,
 		}
 	}
 
@@ -89,9 +88,7 @@ export async function login(formState: FormState, formData: FormData) {
 	if (error?.code === "invalid_credentials") {
 		return {
 			errors: {
-				email: undefined,
-				password: undefined,
-				invalidCredentials: ["Incorrect username or password"],
+				email: ["Incorrect email or password"],
 			},
 		}
 	} else if (error?.status && error.status >= 500) {
@@ -168,21 +165,24 @@ export async function signout() {
 	redirect("/")
 }
 
-export async function sendEmailReset(formState: FormState, formData: FormData) {
-	const supabase = await createClient()
+export async function sendPasswordReset() {
+    const supabase = await createClient()
+    const { data: userData, error: userError} = await supabase.auth.getUser()
 
-	const validatedFields = ForgotPasswordFormSchema.safeParse({
-		email: formData.get("email"),
-	})
+    if (userError) {
+        throw new Error(userError.message)
+    }
 
-	if (!validatedFields.success) {
-		return {
-			errors: validatedFields.error.flatten().fieldErrors,
-		}
-	}
+    const userEmail = userData.user.email
+
+    if (!userEmail) {
+        return
+    }
 
 	const { error } = await supabase.auth.resetPasswordForEmail(
-		validatedFields.data.email,
+        userEmail, {
+            redirectTo: "http://localhost:3000/login/reset-password",
+        }
 	)
 
 	if (error) {
@@ -192,10 +192,59 @@ export async function sendEmailReset(formState: FormState, formData: FormData) {
 
 export async function resetPassword(formState: FormState, formData: FormData) {
 	const supabase = await createClient()
+    const { data: userData, error: userError} = await supabase.auth.getUser()
 
-	const validatedFields = ResetPasswordFormSchema.safeParse({
-		password: formData.get("password"),
+    if (userError) {
+        throw new Error(userError.message)
+    }
+
+    const userid = userData.user.id
+
+    const validatedFields = ChangePasswordFormScheme.safeParse({
+        password: formData.get("password"),
+		newPassword: formData.get("newPassword"),
 		confirmPassword: formData.get("confirmPassword"),
+	})
+
+	if (!validatedFields.success) {
+		return {
+			errors: validatedFields.error.flatten().fieldErrors,
+		}
+    }
+
+    const { data: passwordData, error: passwordError } = await supabase.rpc("changepassword", {
+        "current": validatedFields.data.password,
+        "new": validatedFields.data.newPassword,
+        "userid": userid,
+    })
+
+	if (passwordError) {
+		throw new Error(passwordError.message)
+    }
+
+    if (!(passwordData as boolean)) {
+        return {
+            errors: {
+                password: ["Incorrect password"],
+            }
+        }
+    }
+
+    const { error: signoutError } = await supabase.auth.signOut()
+
+    if (signoutError) {
+		throw new Error(signoutError.message)
+    }
+
+	revalidatePath("/")
+	redirect("/login")
+}
+
+export async function updateEmail(formState: FormState, formData: FormData) {
+    const supabase = await createClient()
+
+	const validatedFields = EmailFormSchema.safeParse({
+		email: formData.get("email"),
 	})
 
 	if (!validatedFields.success) {
@@ -204,8 +253,11 @@ export async function resetPassword(formState: FormState, formData: FormData) {
 		}
 	}
 
-	const { data, error } = await supabase.auth.updateUser({
-		password: validatedFields.data.password,
+	const { error } = await supabase.auth.updateUser({
+        email: validatedFields.data.email,
+        data: {
+            email: validatedFields.data.email
+        }
 	})
 
 	if (error) {
@@ -213,5 +265,53 @@ export async function resetPassword(formState: FormState, formData: FormData) {
 	}
 
 	revalidatePath("/")
-	redirect("/login")
+	redirect("/")
+}
+
+export async function updateUserProfile(formState: FormState, formData: FormData) {
+    const supabase = await createClient()
+    const { data: userData, error: userError} = await supabase.auth.getUser()
+
+    if (userError) {
+        throw new Error(userError.message)
+    }
+
+    const userid = userData.user.id
+
+	const validatedFields = EditProfileFormSchema.safeParse({
+        displayName: formData.get("displayName"),
+        bio: formData.get("bio"),
+        role: "other",
+    })
+
+	if (!validatedFields.success) {
+		return {
+			errors: validatedFields.error.flatten().fieldErrors,
+		}
+    }
+
+    const { error: metadataError } = await supabase.auth.updateUser({
+        data: {
+            display_name: validatedFields.data.displayName
+        }
+    })
+
+    if (metadataError) {
+		throw new Error(metadataError.message)
+	}
+
+    const { error: profilesError } = await supabase
+        .from("profiles")
+        .update({
+            bio: validatedFields.data.bio,
+            role: validatedFields.data.role,
+        })
+        .eq("id", userid)
+
+	if (profilesError) {
+		throw new Error(profilesError.message)
+	}
+
+	revalidatePath("/")
+	redirect("/")
 }

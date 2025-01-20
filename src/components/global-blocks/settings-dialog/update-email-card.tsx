@@ -4,26 +4,35 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import React from 'react'
+import React, { useActionState } from 'react'
+import { updateEmail } from '@/lib/actions'
+import { UserMetadata } from '@supabase/supabase-js'
 
-export default function UpdateEmailCard() {
+type UpdateEmailCardProps = {
+    userMetadata: UserMetadata
+}
+
+export default function UpdateEmailCard({ userMetadata }: UserMetadata) {
+    const [state, action, pending] = useActionState(updateEmail, undefined)
     return (
         <Card>
-            <form action="">
+            <form action={action}>
                 <CardHeader>
-                    <CardTitle>Email</CardTitle>
+                    <CardTitle>Edit Email</CardTitle>
                     <CardDescription>
-                        Update your email here.
+                        For security reasons, a confirmation message will be sent to both your old and new
+                        emails. Please confirm your changes in both emails.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
                     <div className="space-y-1">
-                        <Label htmlFor="new">New Email</Label>
-                        <Input id="new" type="email" />
+                        <Label htmlFor="email">Email</Label>
+                        <Input id="email" name="email" type="text" defaultValue={userMetadata.email} />
+                        {state?.errors.email && <p className="text-sm text-destructive">{state.errors.email}</p>}
                     </div>
                 </CardContent>
                 <CardFooter>
-                    <Button type="submit">Update Email</Button>
+                    <Button type="submit" disabled={pending}>Update Email</Button>
                 </CardFooter>
             </form>
         </Card>

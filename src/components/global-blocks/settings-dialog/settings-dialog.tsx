@@ -37,7 +37,7 @@ export default function SettingsDialog({ userMetadata, isSettingsDialogOpen, set
                         <EditProfileCard userMetadata={userMetadata} />
                     </TabsContent>
                     <TabsContent value="security">
-                        <UpdateEmailCard />
+                        <UpdateEmailCard userMetadata={userMetadata} />
                         <ChangePasswordCard />
                     </TabsContent>
                     <TabsContent value="danger">

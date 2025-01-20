@@ -18,7 +18,7 @@ export default function UserWidget({ userMetadata, className}: UserWidgetProps) 
 			</Avatar>
 			<div className="ml-2">
 				<h3 className="font-bold">{userMetadata.display_name}</h3>
-				<p className="text-sm">{userMetadata.email}</p>
+				<p className="text-sm w-[190px] overflow-hidden whitespace-nowrap text-ellipsis">{userMetadata.email}</p>
 			</div>
 		</div>
 	)
