@@ -86,10 +86,10 @@ export const EditProfileFormSchema = z
 				message: "Name must start with non-whitespace character",
 			})
 			.trim(),
+        role: z.string().trim(),
 		bio: z
 			.string()
 			.trim(),
-		role: z.string().trim(),
 	})
 
 export type FormState =
@@ -100,6 +100,7 @@ export type FormState =
                 password?: string[];
                 newPassword?: string[];
                 confirmPassword?: string[];
+                role?: string[];
                 bio?: string[];
 			}
 	  }

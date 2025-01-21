@@ -14,6 +14,7 @@ type UpdateEmailCardProps = {
 
 export default function UpdateEmailCard({ userProfile }: UpdateEmailCardProps) {
     const [state, action, pending] = useActionState(updateEmail, undefined)
+
     return (
         <Card>
             <form action={action}>

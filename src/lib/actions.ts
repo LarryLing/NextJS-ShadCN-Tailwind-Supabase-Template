@@ -12,6 +12,7 @@ import {
     EditProfileFormSchema,
 } from "@/lib/definitions"
 import { headers } from "next/headers"
+import { z } from "zod"
 
 export async function signup(formState: FormState, formData: FormData) {
 	const supabase = await createClient()
@@ -267,16 +268,16 @@ export async function updateEmail(formState: FormState, formData: FormData) {
 				email: ["Email is already in use"],
 			},
 		}
-	}
+    }
 
-	const { error: updateError } = await supabase.auth.updateUser({
+    const { error: updateError } = await supabase.auth.updateUser({
         email: validatedFields.data.email,
         data: {
-            email: validatedFields.data.email
+            email: validatedFields.data.email,
         }
-	})
+    })
 
-	if (updateError) {
+    if (updateError) {
 		throw new Error(updateError.message)
 	}
 
@@ -297,7 +298,7 @@ export async function updateUserProfile(formState: FormState, formData: FormData
 	const validatedFields = EditProfileFormSchema.safeParse({
         displayName: formData.get("displayName"),
         bio: formData.get("bio"),
-        role: "other",
+        role: formData.get("role"),
     })
 
 	if (!validatedFields.success) {

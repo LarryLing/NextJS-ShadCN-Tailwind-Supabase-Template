@@ -20,15 +20,15 @@ export default function EditProfileCard({ userProfile }: EditProfileCardProps) {
 
     return (
         <Card>
+            <CardHeader>
+                <CardTitle>
+                    Edit Profile
+                </CardTitle>
+                <CardDescription>
+                    Change your profile details here.
+                </CardDescription>
+            </CardHeader>
             <form action={action}>
-                <CardHeader>
-                    <CardTitle>
-                        Edit Profile
-                    </CardTitle>
-                    <CardDescription>
-                        Change your profile details here.
-                    </CardDescription>
-                </CardHeader>
                 <CardContent className="space-y-2">
                     <div className="flex justify-center items-center gap-4">
                         <Avatar className="w-[100px] h-[100px] overflow-visible">
@@ -41,7 +41,7 @@ export default function EditProfileCard({ userProfile }: EditProfileCardProps) {
                         </Avatar>
                         <div className="space-y-1">
                             <Label htmlFor="picture">Profile Picture</Label>
-                            <Input id="picture" name="picture" type="file" accept="image/png, image/gif, image/jpeg" className="justify-center items-center "/>
+                            <Input id="picture" name="picture" type="file" accept="image/png, image/gif, image/jpeg" className="justify-center items-center"/>
                         </div>
                     </div>
                     <div className="space-y-1">
@@ -51,16 +51,16 @@ export default function EditProfileCard({ userProfile }: EditProfileCardProps) {
                     </div>
                     <div className="space-y-1">
                         <Label htmlFor="role">Role</Label>
-                        <Select>
+                        <Select name="role" defaultValue={userProfile.role}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Select a role" />
                             </SelectTrigger>
                             <SelectContent className="z-[9999]">
-                                <SelectItem id="role" value="student">Student</SelectItem>
-                                <SelectItem id="role" value="educator">Educator</SelectItem>
-                                <SelectItem id="role" value="design">Design</SelectItem>
-                                <SelectItem id="role" value="product management">Product Management</SelectItem>
-                                <SelectItem id="role" value="other">Other</SelectItem>
+                                <SelectItem value="student">Student</SelectItem>
+                                <SelectItem value="educator">Educator</SelectItem>
+                                <SelectItem value="design">Design</SelectItem>
+                                <SelectItem value="product management">Product Management</SelectItem>
+                                <SelectItem value="other">Other</SelectItem>
                             </SelectContent>
                         </Select>
                         {state?.errors.role && <p className="text-sm text-destructive">{state.errors.role}</p>}
