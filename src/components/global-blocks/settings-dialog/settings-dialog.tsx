@@ -8,19 +8,19 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import React from 'react'
-import { UserMetadata } from '@supabase/supabase-js'
 import EditProfileCard from './edit-profile-card'
 import UpdateEmailCard from './update-email-card'
 import ChangePasswordCard from './change-password-card'
 import DeleteAccountCard from './delete-account-card'
+import { UserProfile } from '@/lib/types'
 
 type SettingsDialogProps = {
-    userMetadata: UserMetadata;
+    userProfile: UserProfile;
     isSettingsDialogOpen: boolean;
     setIsSettingsDialogOpen: (arg0: boolean) => void;
 }
 
-export default function SettingsDialog({ userMetadata, isSettingsDialogOpen, setIsSettingsDialogOpen }: SettingsDialogProps) {
+export default function SettingsDialog({ userProfile, isSettingsDialogOpen, setIsSettingsDialogOpen }: SettingsDialogProps) {
     return (
         <Dialog open={isSettingsDialogOpen} onOpenChange={setIsSettingsDialogOpen}>
             <DialogContent className="z-[9999] h-[600px] overflow-auto flex flex-col justify-start">
@@ -34,10 +34,10 @@ export default function SettingsDialog({ userMetadata, isSettingsDialogOpen, set
                         <TabsTrigger value="danger">Danger Zone</TabsTrigger>
                     </TabsList>
                     <TabsContent value="profile">
-                        <EditProfileCard userMetadata={userMetadata} />
+                        <EditProfileCard userProfile={userProfile} />
                     </TabsContent>
                     <TabsContent value="security">
-                        <UpdateEmailCard userMetadata={userMetadata} />
+                        <UpdateEmailCard userProfile={userProfile} />
                         <ChangePasswordCard />
                     </TabsContent>
                     <TabsContent value="danger">

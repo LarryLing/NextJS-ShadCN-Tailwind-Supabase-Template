@@ -4,7 +4,6 @@ import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { createClient } from "./supabase/server"
 import {
-	ForgotPasswordFormSchema,
 	FormState,
 	LoginFormSchema,
 	EmailFormSchema,
@@ -40,7 +39,7 @@ export async function signup(formState: FormState, formData: FormData) {
 		throw new Error(emailExistsError.message)
 	}
 
-	if (emailExists === null) {
+	if (emailExists !== null) {
 		return {
 			errors: {
 				email: ["Email is already in use"],
@@ -50,18 +49,17 @@ export async function signup(formState: FormState, formData: FormData) {
 
 	const { error: signupError } = await supabase.auth.signUp({
 		email: validatedFields.data.email,
-		password: validatedFields.data.password,
-		options: {
-			data: {
-				display_name: validatedFields.data.displayName,
-				profile_picture: "",
-			},
-		},
+        password: validatedFields.data.password,
+        options: {
+            data: {
+                display_name: validatedFields.data.displayName
+            }
+        }
 	})
 
 	if (signupError) {
 		throw new Error(signupError.message)
-	}
+    }
 
 	revalidatePath("/", "layout")
 	redirect("/")
@@ -251,17 +249,35 @@ export async function updateEmail(formState: FormState, formData: FormData) {
 		return {
 			errors: validatedFields.error.flatten().fieldErrors,
 		}
+    }
+
+    const { data: emailExists, error: emailExistsError } = await supabase
+		.from("profiles")
+		.select("email")
+		.eq("email", validatedFields.data.email)
+		.maybeSingle()
+
+	if (emailExistsError) {
+		throw new Error(emailExistsError.message)
 	}
 
-	const { error } = await supabase.auth.updateUser({
+	if (emailExists !== null) {
+		return {
+			errors: {
+				email: ["Email is already in use"],
+			},
+		}
+	}
+
+	const { error: updateError } = await supabase.auth.updateUser({
         email: validatedFields.data.email,
         data: {
             email: validatedFields.data.email
         }
 	})
 
-	if (error) {
-		throw new Error(error.message)
+	if (updateError) {
+		throw new Error(updateError.message)
 	}
 
 	revalidatePath("/")
@@ -290,26 +306,17 @@ export async function updateUserProfile(formState: FormState, formData: FormData
 		}
     }
 
-    const { error: metadataError } = await supabase.auth.updateUser({
-        data: {
-            display_name: validatedFields.data.displayName
-        }
-    })
-
-    if (metadataError) {
-		throw new Error(metadataError.message)
-	}
-
-    const { error: profilesError } = await supabase
+    const { error: profileError } = await supabase
         .from("profiles")
         .update({
+            display_name: validatedFields.data.displayName,
             bio: validatedFields.data.bio,
             role: validatedFields.data.role,
         })
         .eq("id", userid)
 
-	if (profilesError) {
-		throw new Error(profilesError.message)
+	if (profileError) {
+		throw new Error(profileError.message)
 	}
 
 	revalidatePath("/")

@@ -175,7 +175,6 @@ _For more examples, please refer to the [Documentation](https://example.com)_
     - [x] Close other UI on dialog open
     - [ ] Enable users to upload custom profile pictures
     - [x] Profile updates
-    - [ ] Migrate to ShadCN forms
     - [x] Password recovery
     - [x] Email updates
 - [ ] Implement shadow for suspense rendering

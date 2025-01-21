@@ -1,13 +1,7 @@
-import NavigationBar from "@/components/global-blocks/navigation-bar/navigation-bar"
-import { createClient } from "@/lib/supabase/server"
-
 export default async function HomePage() {
-	const supabase = await createClient()
-	const userResponse = await supabase.auth.getUser()
-
 	return (
 		<div className="">
-			<NavigationBar userResponse={userResponse} />
+			Hello Content
 		</div>
 	)
 }

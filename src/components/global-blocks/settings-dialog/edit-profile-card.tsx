@@ -6,16 +6,16 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { UserMetadata } from '@supabase/supabase-js'
 import React, { useActionState } from 'react'
 import { updateUserProfile } from '@/lib/actions'
 import { Textarea } from "@/components/ui/textarea"
+import { UserProfile } from '@/lib/types'
 
 type EditProfileCardProps = {
-    userMetadata: UserMetadata
+    userProfile: UserProfile
 }
 
-export default function EditProfileCard({ userMetadata }: EditProfileCardProps) {
+export default function EditProfileCard({ userProfile }: EditProfileCardProps) {
     const [state, action, pending] = useActionState(updateUserProfile, undefined)
 
     return (
@@ -32,9 +32,9 @@ export default function EditProfileCard({ userMetadata }: EditProfileCardProps) 
                 <CardContent className="space-y-2">
                     <div className="flex justify-center items-center gap-4">
                         <Avatar className="w-[100px] h-[100px] overflow-visible">
-                            <AvatarImage src={userMetadata.profile_picture} />
+                            <AvatarImage src={userProfile.picture} />
                             <AvatarFallback>
-                                {userMetadata.display_name
+                                {userProfile.display_name
                                     .substring(0, 2)
                                     .toUpperCase()}
                             </AvatarFallback>
@@ -46,7 +46,7 @@ export default function EditProfileCard({ userMetadata }: EditProfileCardProps) 
                     </div>
                     <div className="space-y-1">
                         <Label htmlFor="displayName">Display Name</Label>
-                        <Input id="displayName" name="displayName" type="text" defaultValue={userMetadata.display_name} />
+                        <Input id="displayName" name="displayName" type="text" defaultValue={userProfile.display_name} />
                         {state?.errors.displayName && <p className="text-sm text-destructive">{state.errors.displayName}</p>}
                     </div>
                     <div className="space-y-1">
@@ -69,7 +69,7 @@ export default function EditProfileCard({ userMetadata }: EditProfileCardProps) 
                         <Label htmlFor="bio">Bio</Label>
                         <Textarea
                             placeholder="Tell us a little bit about yourself"
-                            defaultValue=""
+                            defaultValue={userProfile.bio}
                             id="bio"
                             name="bio"
                             className="resize-none h-[100px]"

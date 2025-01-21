@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/global-blocks/theme-provider"
+import { createClient } from "@/lib/supabase/server"
+import NavigationBar from "@/components/global-blocks/navigation-bar/navigation-bar"
 import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -10,9 +12,12 @@ export const metadata: Metadata = {
 	description: "A NextJS Template",
 }
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: Readonly<{ children: React.ReactNode }>) {
+    const supabase = await createClient()
+    const userResponse = await supabase.auth.getUser()
+
 	return (
 		<html lang="en">
 			<body className={`${inter.className} antialiased`}>
@@ -21,7 +26,8 @@ export default function RootLayout({
 					defaultTheme="system"
 					enableSystem
 					disableTransitionOnChange
-				>
+                >
+                    <NavigationBar userResponse={userResponse} />
 					{children}
 				</ThemeProvider>
 			</body>

@@ -6,13 +6,13 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import React, { useActionState } from 'react'
 import { updateEmail } from '@/lib/actions'
-import { UserMetadata } from '@supabase/supabase-js'
+import { UserProfile } from '@/lib/types'
 
 type UpdateEmailCardProps = {
-    userMetadata: UserMetadata
+    userProfile: UserProfile
 }
 
-export default function UpdateEmailCard({ userMetadata }: UserMetadata) {
+export default function UpdateEmailCard({ userProfile }: UpdateEmailCardProps) {
     const [state, action, pending] = useActionState(updateEmail, undefined)
     return (
         <Card>
@@ -27,7 +27,7 @@ export default function UpdateEmailCard({ userMetadata }: UserMetadata) {
                 <CardContent className="space-y-2">
                     <div className="space-y-1">
                         <Label htmlFor="email">Email</Label>
-                        <Input id="email" name="email" type="text" defaultValue={userMetadata.email} />
+                        <Input id="email" name="email" type="text" defaultValue={userProfile.email} />
                         {state?.errors.email && <p className="text-sm text-destructive">{state.errors.email}</p>}
                     </div>
                 </CardContent>

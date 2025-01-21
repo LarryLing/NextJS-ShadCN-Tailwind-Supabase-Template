@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import {
 	NavigationMenu,
@@ -10,7 +10,7 @@ import {
 	navigationMenuTriggerStyle,
 } from "../../ui/navigation-menu"
 import { Button } from "../../ui/button"
-import { LogIn, MenuIcon, PlusIcon, Settings, User, XIcon } from "lucide-react"
+import { LogIn, MenuIcon, PlusIcon, Settings, XIcon } from "lucide-react"
 import { Separator } from "../../ui/separator"
 import { signout } from "@/lib/actions"
 import { UserResponse } from "@supabase/supabase-js"
@@ -18,6 +18,7 @@ import AvatarPopover from "./avatar-popover"
 import ThemeDropdown from "./theme-dropdown"
 import UserWidget from "./user-widget"
 import SettingsDialog from "../settings-dialog/settings-dialog"
+import { useProfile } from "@/hooks/use-profile"
 
 const NavbarItems = [
 	{
@@ -57,7 +58,7 @@ export default function NavigationBar({ userResponse }: NavigationBarProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useState(false)
     const [isAvatarPopoverOpen, setIsAvatarPopoverOpen] = useState(false)
-    const user = userResponse.data.user
+    const { userProfile } = useProfile(userResponse.data.user)
 
     function openSettingsDialog() {
         if (isMenuOpen) setIsMenuOpen(false)
@@ -103,7 +104,7 @@ export default function NavigationBar({ userResponse }: NavigationBarProps) {
 					</NavigationMenuList>
 				</div>
 				<div className="flex justify-center items-center gap-4">
-					{user ? (
+					{userProfile ? (
 						<>
 							<Link href="#">
 								<Button
@@ -116,7 +117,7 @@ export default function NavigationBar({ userResponse }: NavigationBarProps) {
 							</Link>
 							<div className="hidden md:flex justify-center items-center gap-4">
 								<AvatarPopover
-                                    userMetadata={user.user_metadata}
+                                    userProfile={userProfile}
                                     openSettingsDialog={openSettingsDialog}
 								/>
 							</div>
@@ -179,12 +180,12 @@ export default function NavigationBar({ userResponse }: NavigationBarProps) {
 						)
 					})}
 				</NavigationMenuList>
-				{user && (
+				{userProfile && (
 					<>
 						<div className="px-2 pb-4">
 							<Separator className="w-full" />
 						</div>
-                        <UserWidget userMetadata={user.user_metadata} className="px-6 pb-4"/>
+                        <UserWidget picture={userProfile.picture} display_name={userProfile.display_name} email={userProfile.email} className="px-6 pb-4"/>
                         <div className="space-y-2 px-3 pb-4">
                             <ThemeDropdown />
                             <Button
@@ -207,7 +208,7 @@ export default function NavigationBar({ userResponse }: NavigationBarProps) {
 					</>
 				)}
             </div>
-            {user && <SettingsDialog userMetadata={user.user_metadata} isSettingsDialogOpen={isSettingsDialogOpen} setIsSettingsDialogOpen={setIsSettingsDialogOpen} />}
+            {userProfile && <SettingsDialog userProfile={userProfile} isSettingsDialogOpen={isSettingsDialogOpen} setIsSettingsDialogOpen={setIsSettingsDialogOpen} />}
 		</NavigationMenu>
 	)
 }
