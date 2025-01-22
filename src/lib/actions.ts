@@ -10,9 +10,11 @@ import {
 	SignupFormSchema,
     ChangePasswordFormScheme,
     EditProfileFormSchema,
+    PictureFormSchema,
 } from "@/lib/definitions"
 import { headers } from "next/headers"
-import { z } from "zod"
+import { ChangeEvent } from "react"
+import { tree } from "next/dist/build/templates/app-page"
 
 export async function signup(formState: FormState, formData: FormData) {
 	const supabase = await createClient()
@@ -287,7 +289,7 @@ export async function updateEmail(formState: FormState, formData: FormData) {
 
 export async function updateUserProfile(formState: FormState, formData: FormData) {
     const supabase = await createClient()
-    const { data: userData, error: userError} = await supabase.auth.getUser()
+    const { data: userData, error: userError } = await supabase.auth.getUser()
 
     if (userError) {
         throw new Error(userError.message)
@@ -295,16 +297,16 @@ export async function updateUserProfile(formState: FormState, formData: FormData
 
     const userid = userData.user.id
 
-	const validatedFields = EditProfileFormSchema.safeParse({
+    const validatedFields = EditProfileFormSchema.safeParse({
         displayName: formData.get("displayName"),
         bio: formData.get("bio"),
         role: formData.get("role"),
     })
 
-	if (!validatedFields.success) {
-		return {
-			errors: validatedFields.error.flatten().fieldErrors,
-		}
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+        }
     }
 
     const { error: profileError } = await supabase
@@ -321,5 +323,50 @@ export async function updateUserProfile(formState: FormState, formData: FormData
 	}
 
 	revalidatePath("/")
+	redirect("/")
+}
+
+export async function uploadImage(formState: FormState, formData: FormData) {
+    const supabase = await createClient()
+
+    const validatedFields = PictureFormSchema.safeParse({
+        picture: formData.get("picture"),
+    })
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+        }
+    }
+
+    if (validatedFields.data.picture.size === 0) return
+
+    const { data: userData, error: userError } = await supabase.auth.getUser()
+
+    if (userError) {
+        throw new Error(userError.message)
+    }
+
+    const userid = userData.user.id
+    const { data: uploadData, error: uploadError } = await supabase.storage.from("avatars").upload(`avatar_${userid}`, validatedFields.data.picture, {
+        upsert: true,
+    })
+
+    if (uploadError) {
+        throw new Error(uploadError.message)
+    }
+
+    const { error: profileError } = await supabase
+        .from("profiles")
+        .update({
+            picture: uploadData.path,
+        })
+        .eq("id", userid)
+
+    if (profileError) {
+        throw new Error(profileError.message)
+    }
+
+    revalidatePath("/")
 	redirect("/")
 }

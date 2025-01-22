@@ -173,7 +173,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
     - [x] Create UI
     - [ ] Fix backdrop bug
     - [x] Close other UI on dialog open
-    - [ ] Enable users to upload custom profile pictures
+    - [x] Enable users to upload custom profile pictures
     - [x] Profile updates
     - [x] Password recovery
     - [x] Email updates

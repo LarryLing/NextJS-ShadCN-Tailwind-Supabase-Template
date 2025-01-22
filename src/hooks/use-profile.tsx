@@ -22,7 +22,9 @@ export function useProfile(user: User | null) {
                 throw new Error(profileError.message)
             }
 
-            setUserProfile(profileData as UserProfile)
+            const { data: pictureData } = await supabase.storage.from("avatars").getPublicUrl(profileData.picture)
+
+            setUserProfile({ ...profileData, picture: pictureData.publicUrl } as UserProfile)
         }
 
         getProfile()

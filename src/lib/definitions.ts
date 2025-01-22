@@ -1,3 +1,4 @@
+import { File } from "buffer"
 import { z } from "zod"
 
 export const SignupFormSchema = z
@@ -90,18 +91,25 @@ export const EditProfileFormSchema = z
 		bio: z
 			.string()
 			.trim(),
-	})
+    })
+
+export const PictureFormSchema = z
+    .object({
+        picture: z
+            .instanceof(File)
+    })
 
 export type FormState =
 	| {
-			errors?: {
-                displayName?: string[];
-                email?: string[];
-                password?: string[];
-                newPassword?: string[];
-                confirmPassword?: string[];
-                role?: string[];
-                bio?: string[];
-			}
+        errors?: {
+            picture?: string[];
+            displayName?: string[];
+            email?: string[];
+            password?: string[];
+            newPassword?: string[];
+            confirmPassword?: string[];
+            role?: string[];
+            bio?: string[];
+        }
 	  }
 	| undefined
