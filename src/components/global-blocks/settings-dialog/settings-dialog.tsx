@@ -13,7 +13,6 @@ import UpdateEmailCard from './update-email-card'
 import ChangePasswordCard from './change-password-card'
 import DeleteAccountCard from './delete-account-card'
 import { UserProfile } from '@/lib/types'
-import UploadPictureCard from './upload-picture-card'
 
 type SettingsDialogProps = {
     userProfile: UserProfile;
@@ -35,7 +34,6 @@ export default function SettingsDialog({ userProfile, isSettingsDialogOpen, setI
                         <TabsTrigger value="danger">Danger Zone</TabsTrigger>
                     </TabsList>
                     <TabsContent value="profile" className="space-y-4">
-                        <UploadPictureCard userProfile={userProfile} />
                         <EditProfileCard userProfile={userProfile} />
                     </TabsContent>
                     <TabsContent value="security" className="space-y-4">

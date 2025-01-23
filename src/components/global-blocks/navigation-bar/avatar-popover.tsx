@@ -1,8 +1,7 @@
 "use client"
 
-import React from "react"
+import React, { ReactElement } from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { signout } from "@/lib/actions"
@@ -12,25 +11,21 @@ import ThemeDropdown from "./theme-dropdown"
 import { UserProfile } from "@/lib/types"
 
 type AvatarPopoverProps = {
-    userProfile: UserProfile,
+    userProfile: UserProfile;
     openSettingsDialog: () => void;
+    children?: ReactElement | null;
 }
 
-export default function AvatarPopover({ userProfile, openSettingsDialog }: AvatarPopoverProps) {
-    return (
-		<Popover>
+export default function AvatarPopover({ userProfile, openSettingsDialog, children }: AvatarPopoverProps) {
+	return (
+        <Popover>
 			<PopoverTrigger>
-				<Avatar>
-					<AvatarImage src={userProfile?.picture} />
-					<AvatarFallback>
-						{userProfile?.display_name
-							.substring(0, 2)
-							.toUpperCase()}
-					</AvatarFallback>
-				</Avatar>
+				{ children }
 			</PopoverTrigger>
 			<PopoverContent className="z-[9999] hidden md:block mt-1 mr-2 p-0" hideWhenDetached>
-                <UserWidget picture={userProfile.picture} display_name={userProfile.display_name} email={userProfile.email} className="px-6 py-4"/>
+                <UserWidget userProfile={userProfile} className="px-6 py-4" >
+                    { children }
+                </UserWidget>
 				<div className="px-3 pb-4 space-y-2">
                     <ThemeDropdown />
                     <Button

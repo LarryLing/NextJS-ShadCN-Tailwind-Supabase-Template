@@ -1,21 +1,33 @@
 "use client"
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import React, { useActionState } from 'react'
+import React, { ChangeEvent, ReactElement, useActionState, useState } from 'react'
 import { updateUserProfile } from '@/lib/actions'
 import { Textarea } from "@/components/ui/textarea"
 import { UserProfile } from '@/lib/types'
 
 type EditProfileCardProps = {
-    userProfile: UserProfile
+    userProfile: UserProfile;
 }
 
 export default function EditProfileCard({ userProfile }: EditProfileCardProps) {
     const [state, action, pending] = useActionState(updateUserProfile, undefined)
+    const [previewAvatar, setPreviewAvatar] = useState<string | undefined>(userProfile.picture)
+    const [imageTooLarge, setImageTooLarge] = useState(false)
+    const MAX_FILE_SIZE = 6000000
+
+    function handleChange(e: ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        setImageTooLarge(file.size > MAX_FILE_SIZE)
+        setPreviewAvatar(URL.createObjectURL(file))
+    }
 
     return (
         <Card>
@@ -29,6 +41,21 @@ export default function EditProfileCard({ userProfile }: EditProfileCardProps) {
             </CardHeader>
             <form action={action}>
                 <CardContent className="space-y-2">
+                    <div className="flex justify-center items-center gap-4">
+                        <Avatar className="size-[100px]">
+                            <AvatarImage src={previewAvatar} />
+                            <AvatarFallback>
+                                {userProfile.display_name
+                                    .substring(0, 2)
+                                    .toUpperCase()}
+                            </AvatarFallback>
+                        </Avatar>
+                        <div className="space-y-1">
+                            <Label htmlFor="picture">Upload Image</Label>
+                            <Input id="picture" name="picture" type="file" accept="image/*" onChange={(e) => handleChange(e)} className="justify-center items-center" />
+                            {imageTooLarge && <p className="text-sm text-destructive">Max file size is 6MB</p>}
+                        </div>
+                    </div>
                     <div className="space-y-1">
                         <Label htmlFor="displayName">Display Name</Label>
                         <Input id="displayName" name="displayName" type="text" defaultValue={userProfile.display_name} />
@@ -63,7 +90,7 @@ export default function EditProfileCard({ userProfile }: EditProfileCardProps) {
                     </div>
                 </CardContent>
                 <CardFooter>
-                    <Button type="submit" disabled={pending}>Update Profile</Button>
+                    <Button type="submit" disabled={pending || imageTooLarge}>Update Profile</Button>
                 </CardFooter>
             </form>
         </Card>

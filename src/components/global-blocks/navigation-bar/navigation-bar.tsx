@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { ReactElement, useState } from "react"
 import Link from "next/link"
 import {
 	NavigationMenu,
@@ -13,12 +13,11 @@ import { Button } from "../../ui/button"
 import { LogIn, MenuIcon, PlusIcon, Settings, XIcon } from "lucide-react"
 import { Separator } from "../../ui/separator"
 import { signout } from "@/lib/actions"
-import { UserResponse } from "@supabase/supabase-js"
 import AvatarPopover from "./avatar-popover"
 import ThemeDropdown from "./theme-dropdown"
 import UserWidget from "./user-widget"
 import SettingsDialog from "../settings-dialog/settings-dialog"
-import { useProfile } from "@/hooks/use-profile"
+import { UserProfile } from "@/lib/types"
 
 const NavbarItems = [
 	{
@@ -39,26 +38,15 @@ const NavbarItems = [
 	},
 ]
 
-const UserSidebarItems = [
-	{
-		name: "Settings",
-		href: "/settings",
-	},
-	{
-		name: "Notifications",
-		href: "/notifications",
-	},
-]
-
 type NavigationBarProps = {
-	userResponse: UserResponse
+    userProfile: UserProfile | null;
+    children: ReactElement | null;
 }
 
-export default function NavigationBar({ userResponse }: NavigationBarProps) {
+export default function NavigationBar({ userProfile, children }: NavigationBarProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useState(false)
     const [isAvatarPopoverOpen, setIsAvatarPopoverOpen] = useState(false)
-    const { userProfile } = useProfile(userResponse.data.user)
 
     function openSettingsDialog() {
         if (isMenuOpen) setIsMenuOpen(false)
@@ -119,7 +107,9 @@ export default function NavigationBar({ userResponse }: NavigationBarProps) {
 								<AvatarPopover
                                     userProfile={userProfile}
                                     openSettingsDialog={openSettingsDialog}
-								/>
+                                >
+                                    { children }
+                                </AvatarPopover>
 							</div>
 						</>
 					) : (
@@ -185,7 +175,9 @@ export default function NavigationBar({ userResponse }: NavigationBarProps) {
 						<div className="px-2 pb-4">
 							<Separator className="w-full" />
 						</div>
-                        <UserWidget picture={userProfile.picture} display_name={userProfile.display_name} email={userProfile.email} className="px-6 pb-4"/>
+                        <UserWidget userProfile={userProfile} className="px-6 pb-4">
+                            { children }
+                        </UserWidget>
                         <div className="space-y-2 px-3 pb-4">
                             <ThemeDropdown />
                             <Button
@@ -193,7 +185,7 @@ export default function NavigationBar({ userResponse }: NavigationBarProps) {
                                 className="block px-3"
                                 onClick={() => openSettingsDialog()}
                             >
-                                <Settings className="inline h-[1.2rem] w-[1.2rem] mr-2"/>
+                                <Settings className="inline h-[1.2rem] w-[1.2rem] mr-2"/>``
                                 <span>Settings</span>
                             </Button>
                             <Button

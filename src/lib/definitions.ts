@@ -1,4 +1,3 @@
-import { File } from "buffer"
 import { z } from "zod"
 
 export const SignupFormSchema = z
@@ -80,6 +79,8 @@ export const ChangePasswordFormScheme = z
 
 export const EditProfileFormSchema = z
     .object({
+        picture: z
+            .instanceof(File),
         displayName: z
 			.string()
 			.min(4, { message: "Name must be at least 4 characters long. " })
@@ -91,12 +92,6 @@ export const EditProfileFormSchema = z
 		bio: z
 			.string()
 			.trim(),
-    })
-
-export const PictureFormSchema = z
-    .object({
-        picture: z
-            .instanceof(File)
     })
 
 export type FormState =

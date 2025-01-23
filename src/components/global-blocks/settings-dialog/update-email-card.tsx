@@ -28,7 +28,7 @@ export default function UpdateEmailCard({ userProfile }: UpdateEmailCardProps) {
                 <CardContent className="space-y-2">
                     <div className="space-y-1">
                         <Label htmlFor="email">Email</Label>
-                        <Input id="email" name="email" type="text" defaultValue={userProfile.email} />
+                        <Input id="email" name="email" type="text" placeholder={userProfile.email} />
                         {state?.errors.email && <p className="text-sm text-destructive">{state.errors.email}</p>}
                     </div>
                 </CardContent>

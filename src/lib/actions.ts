@@ -10,11 +10,8 @@ import {
 	SignupFormSchema,
     ChangePasswordFormScheme,
     EditProfileFormSchema,
-    PictureFormSchema,
 } from "@/lib/definitions"
 import { headers } from "next/headers"
-import { ChangeEvent } from "react"
-import { tree } from "next/dist/build/templates/app-page"
 
 export async function signup(formState: FormState, formData: FormData) {
 	const supabase = await createClient()
@@ -36,19 +33,16 @@ export async function signup(formState: FormState, formData: FormData) {
 		.from("profiles")
 		.select("email")
 		.eq("email", validatedFields.data.email)
-		.maybeSingle()
 
-	if (emailExistsError) {
-		throw new Error(emailExistsError.message)
-	}
+	if (emailExistsError) throw emailExistsError
 
-	if (emailExists !== null) {
+	if (emailExists) {
 		return {
 			errors: {
-				email: ["Email is already in use"],
+				email: ["This email is already associated with an account"],
 			},
 		}
-	}
+    }
 
 	const { error: signupError } = await supabase.auth.signUp({
 		email: validatedFields.data.email,
@@ -60,9 +54,7 @@ export async function signup(formState: FormState, formData: FormData) {
         }
 	})
 
-	if (signupError) {
-		throw new Error(signupError.message)
-    }
+	if (signupError) throw signupError
 
 	revalidatePath("/", "layout")
 	redirect("/")
@@ -82,18 +74,18 @@ export async function login(formState: FormState, formData: FormData) {
 		}
 	}
 
-	const { error } = await supabase.auth.signInWithPassword(
+	const { error: signinError } = await supabase.auth.signInWithPassword(
 		validatedFields.data,
 	)
 
-	if (error?.code === "invalid_credentials") {
+	if (signinError?.code === "invalid_credentials") {
 		return {
 			errors: {
 				email: ["Incorrect email or password"],
 			},
 		}
-	} else if (error?.status && error.status >= 500) {
-		throw new Error(error.message)
+	} else if (signinError?.status && signinError.status >= 500) {
+		throw signinError
 	}
 
 	revalidatePath("/", "layout")
@@ -103,64 +95,60 @@ export async function login(formState: FormState, formData: FormData) {
 export async function loginWithGoogle() {
 	const supabase = await createClient()
 
-	const { data, error } = await supabase.auth.signInWithOAuth({
+	const { data: oauthData, error: oauthError } = await supabase.auth.signInWithOAuth({
 		provider: "google",
 		options: {
 			redirectTo: `${origin}/auth/callback`,
 		},
 	})
 
-	if (error) {
-		throw new Error(error.message)
+	if (oauthError) {
+		throw oauthError
 	}
 
-	redirect(data.url)
+	redirect(oauthData.url)
 }
 
 export async function loginWithDiscord() {
 	const supabase = await createClient()
 	const origin = (await headers()).get("origin")
 
-	const { data, error } = await supabase.auth.signInWithOAuth({
+	const { data: oauthData, error: oauthError } = await supabase.auth.signInWithOAuth({
 		provider: "discord",
 		options: {
 			redirectTo: `${origin}/auth/callback`,
 		},
 	})
 
-	if (error) {
-		throw new Error(error.message)
+	if (oauthError) {
+		throw oauthError
 	}
 
-	redirect(data.url)
+	redirect(oauthData.url)
 }
 
 export async function loginWithGithub() {
 	const supabase = await createClient()
 	const origin = (await headers()).get("origin")
 
-	const { data, error } = await supabase.auth.signInWithOAuth({
+	const { data: oauthData, error: oauthError } = await supabase.auth.signInWithOAuth({
 		provider: "github",
 		options: {
 			redirectTo: `${origin}/auth/callback`,
 		},
 	})
 
-	if (error) {
-		throw new Error(error.message)
-	}
+	if (oauthError) throw oauthError
 
-	redirect(data.url)
+	redirect(oauthData.url)
 }
 
 export async function signout() {
 	const supabase = await createClient()
 
-	const { error } = await supabase.auth.signOut()
+	const { error: singoutError } = await supabase.auth.signOut()
 
-	if (error) {
-		throw new Error(error.message)
-	}
+	if (singoutError) throw singoutError
 
 	revalidatePath("/")
 	redirect("/")
@@ -170,34 +158,24 @@ export async function sendPasswordReset() {
     const supabase = await createClient()
     const { data: userData, error: userError} = await supabase.auth.getUser()
 
-    if (userError) {
-        throw new Error(userError.message)
-    }
+    if (userError) throw userError
 
-    const userEmail = userData.user.email
+    if (!userData.user.email) return
 
-    if (!userEmail) {
-        return
-    }
-
-	const { error } = await supabase.auth.resetPasswordForEmail(
-        userEmail, {
+	const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+        userData.user.email, {
             redirectTo: "http://localhost:3000/login/reset-password",
         }
 	)
 
-	if (error) {
-		throw new Error(error.message)
-	}
+	if (resetError) throw resetError
 }
 
 export async function resetPassword(formState: FormState, formData: FormData) {
 	const supabase = await createClient()
     const { data: userData, error: userError} = await supabase.auth.getUser()
 
-    if (userError) {
-        throw new Error(userError.message)
-    }
+    if (userError) throw userError
 
     const userid = userData.user.id
 
@@ -219,9 +197,7 @@ export async function resetPassword(formState: FormState, formData: FormData) {
         "userid": userid,
     })
 
-	if (passwordError) {
-		throw new Error(passwordError.message)
-    }
+	if (passwordError) throw passwordError
 
     if (!(passwordData as boolean)) {
         return {
@@ -233,9 +209,7 @@ export async function resetPassword(formState: FormState, formData: FormData) {
 
     const { error: signoutError } = await supabase.auth.signOut()
 
-    if (signoutError) {
-		throw new Error(signoutError.message)
-    }
+    if (signoutError) throw signoutError
 
 	revalidatePath("/")
 	redirect("/login")
@@ -258,16 +232,13 @@ export async function updateEmail(formState: FormState, formData: FormData) {
 		.from("profiles")
 		.select("email")
 		.eq("email", validatedFields.data.email)
-		.maybeSingle()
 
-	if (emailExistsError) {
-		throw new Error(emailExistsError.message)
-	}
+	if (emailExistsError) throw emailExistsError
 
-	if (emailExists !== null) {
+	if (emailExists) {
 		return {
 			errors: {
-				email: ["Email is already in use"],
+				email: ["This email is already associated with an account"],
 			},
 		}
     }
@@ -279,9 +250,7 @@ export async function updateEmail(formState: FormState, formData: FormData) {
         }
     })
 
-    if (updateError) {
-		throw new Error(updateError.message)
-	}
+    if (updateError) throw updateError
 
 	revalidatePath("/")
 	redirect("/")
@@ -289,15 +258,9 @@ export async function updateEmail(formState: FormState, formData: FormData) {
 
 export async function updateUserProfile(formState: FormState, formData: FormData) {
     const supabase = await createClient()
-    const { data: userData, error: userError } = await supabase.auth.getUser()
-
-    if (userError) {
-        throw new Error(userError.message)
-    }
-
-    const userid = userData.user.id
 
     const validatedFields = EditProfileFormSchema.safeParse({
+        picture: formData.get("picture"),
         displayName: formData.get("displayName"),
         bio: formData.get("bio"),
         role: formData.get("role"),
@@ -309,64 +272,45 @@ export async function updateUserProfile(formState: FormState, formData: FormData
         }
     }
 
+    const { data: userData, error: userError } = await supabase.auth.getUser()
+
+    if (userError) throw userError
+
+    const userid = userData.user.id
+
+    const { data: avatarData, error: avatarError } = await supabase
+        .from("profiles")
+        .select("picture")
+        .eq("id", userid)
+        .single()
+
+    if (avatarError) throw avatarError
+
+    let avatarUrl = avatarData.picture
+
+    if (validatedFields.data.picture.size !== 0) {
+        const type = validatedFields.data.picture.name.split(".")[1]
+        const { data: uploadData, error: uploadError } = await supabase.storage.from("avatars").upload(`avatar_${userid}.${type}`, validatedFields.data.picture, {
+            upsert: true,
+        })
+
+        if (uploadError) throw uploadError
+
+        avatarUrl = uploadData.path
+    }
+
     const { error: profileError } = await supabase
         .from("profiles")
         .update({
+            picture: avatarUrl,
             display_name: validatedFields.data.displayName,
             bio: validatedFields.data.bio,
             role: validatedFields.data.role,
         })
         .eq("id", userid)
 
-	if (profileError) {
-		throw new Error(profileError.message)
-	}
+	if (profileError) throw profileError
 
 	revalidatePath("/")
-	redirect("/")
-}
-
-export async function uploadImage(formState: FormState, formData: FormData) {
-    const supabase = await createClient()
-
-    const validatedFields = PictureFormSchema.safeParse({
-        picture: formData.get("picture"),
-    })
-
-    if (!validatedFields.success) {
-        return {
-            errors: validatedFields.error.flatten().fieldErrors,
-        }
-    }
-
-    if (validatedFields.data.picture.size === 0) return
-
-    const { data: userData, error: userError } = await supabase.auth.getUser()
-
-    if (userError) {
-        throw new Error(userError.message)
-    }
-
-    const userid = userData.user.id
-    const { data: uploadData, error: uploadError } = await supabase.storage.from("avatars").upload(`avatar_${userid}`, validatedFields.data.picture, {
-        upsert: true,
-    })
-
-    if (uploadError) {
-        throw new Error(uploadError.message)
-    }
-
-    const { error: profileError } = await supabase
-        .from("profiles")
-        .update({
-            picture: uploadData.path,
-        })
-        .eq("id", userid)
-
-    if (profileError) {
-        throw new Error(profileError.message)
-    }
-
-    revalidatePath("/")
 	redirect("/")
 }
