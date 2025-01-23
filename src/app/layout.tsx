@@ -3,8 +3,13 @@ import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/global-blocks/theme-provider"
 import { createClient } from "@/lib/supabase/server"
 import NavigationBar from "@/components/global-blocks/navigation-bar/navigation-bar"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
 import "./globals.css"
-import { UserProfile } from "@/lib/types"
 
 const inter = Inter({ subsets: ["latin"] })
 

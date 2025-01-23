@@ -102,7 +102,6 @@ Of course, no one template will serve all projects since your needs may be diffe
 - [![Supabase][Supabase]][Supabase-url]
 - [![Postgres][Postgres]][Postgres-url]
 - [![Vercel][Vercel]][Vercel-url]
-- [![React Hook Form][ReactHookForm]][ReactHookForm-url]
 - [![Zod][Zod]][Zod-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -169,9 +168,9 @@ _For more examples, please refer to the [Documentation](https://example.com)_
     - [x] Add error page(s)
     - [x] Redirect user to signup page with an error if email is taken
     - [x] Sign out page refresh
-- [ ] Add settings page template
+- [x] Add settings page template
     - [x] Create UI
-    - [ ] Fix backdrop bug
+    - [x] Fix backdrop bug
     - [x] Close other UI on dialog open
     - [x] Enable users to upload custom profile pictures
     - [x] Profile updates
@@ -223,8 +222,6 @@ Project Link: [https://github.com/LarryLing/NextJS-Tailwind-Template](https://gi
 
 ## Acknowledgments
 
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
-
 - [Choose an Open Source License](https://choosealicense.com)
 - [NextJS Docs](https://nextjs.org/docs)
 - [TailwindCSS Docs](https://tailwindcss.com/)
@@ -273,7 +270,5 @@ Use this space to list resources you find helpful and would like to give credit 
 [Postgres-url]: https://www.postgresql.org/
 [Vercel]: https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white
 [Vercel-url]: https://vercel.com/
-[ReactHookForm]: https://img.shields.io/badge/React%20Hook%20Form-%23EC5990.svg?style=for-the-badge&logo=reacthookform&logoColor=white
-[ReactHookForm-url]: https://react-hook-form.com/
 [Zod]: https://img.shields.io/badge/zod-%233068b7.svg?style=for-the-badge&logo=zod&logoColor=white
 [Zod-url]: https://zod.dev/

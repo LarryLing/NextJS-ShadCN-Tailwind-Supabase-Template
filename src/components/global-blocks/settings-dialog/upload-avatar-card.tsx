@@ -1,6 +1,6 @@
 "use client"
 
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { UserProfile } from '@/lib/types'
@@ -17,18 +17,8 @@ export default function UploadAvatarCard({ userProfile, setUserProfile }: Upload
     const supabase = createClient()
 
     const [uploading, setUploading] = useState(false)
-    // const [avatarUrl, setAvatarUrl] = useState<string | undefined>(userProfile.avatar)
     const [imageTooLarge, setImageTooLarge] = useState(false)
     const MAX_FILE_SIZE = 6000000
-
-    // useEffect(() => {
-    //     async function getAvatarUrl(path: string) {
-    //         const { data: avatarUrl } = await supabase.storage.from("avatars").getPublicUrl(path)
-    //         setAvatarUrl(avatarUrl.publicUrl)
-    //     }
-
-    //     if (userProfile.avatar) getAvatarUrl(userProfile.avatar)
-    // }, [userProfile.avatar, supabase])
 
     async function uploadAvatar(e: ChangeEvent<HTMLInputElement>) {
         setUploading(true)
