@@ -17,7 +17,7 @@ type EditProfileCardProps = {
 
 export default function EditProfileCard({ userProfile }: EditProfileCardProps) {
     const [state, action, pending] = useActionState(updateUserProfile, undefined)
-    const [previewAvatar, setPreviewAvatar] = useState<string | undefined>(userProfile.picture)
+    const [previewAvatar, setPreviewAvatar] = useState<string | undefined>(userProfile.avatar)
     const [imageTooLarge, setImageTooLarge] = useState(false)
     const MAX_FILE_SIZE = 6000000
 
@@ -51,8 +51,8 @@ export default function EditProfileCard({ userProfile }: EditProfileCardProps) {
                             </AvatarFallback>
                         </Avatar>
                         <div className="space-y-1">
-                            <Label htmlFor="picture">Upload Image</Label>
-                            <Input id="picture" name="picture" type="file" accept="image/*" onChange={(e) => handleChange(e)} className="justify-center items-center" />
+                            <Label htmlFor="avatar">Upload Image</Label>
+                            <Input id="avatar" name="avatar" type="file" accept="image/*" onChange={(e) => handleChange(e)} className="justify-center items-center" />
                             {imageTooLarge && <p className="text-sm text-destructive">Max file size is 6MB</p>}
                         </div>
                     </div>

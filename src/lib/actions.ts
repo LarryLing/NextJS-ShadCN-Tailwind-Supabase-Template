@@ -29,14 +29,14 @@ export async function signup(formState: FormState, formData: FormData) {
 		}
 	}
 
-	const { data: emailExists, error: emailExistsError } = await supabase
+	const { data: emailExistsData, error: emailExistsError } = await supabase
 		.from("profiles")
 		.select("email")
 		.eq("email", validatedFields.data.email)
 
 	if (emailExistsError) throw emailExistsError
 
-	if (emailExists) {
+	if (emailExistsData.length > 0) {
 		return {
 			errors: {
 				email: ["This email is already associated with an account"],
@@ -228,14 +228,14 @@ export async function updateEmail(formState: FormState, formData: FormData) {
 		}
     }
 
-    const { data: emailExists, error: emailExistsError } = await supabase
+    const { data: emailExistsData, error: emailExistsError } = await supabase
 		.from("profiles")
 		.select("email")
 		.eq("email", validatedFields.data.email)
 
 	if (emailExistsError) throw emailExistsError
 
-	if (emailExists) {
+	if (emailExistsData.length > 0) {
 		return {
 			errors: {
 				email: ["This email is already associated with an account"],
@@ -260,7 +260,7 @@ export async function updateUserProfile(formState: FormState, formData: FormData
     const supabase = await createClient()
 
     const validatedFields = EditProfileFormSchema.safeParse({
-        picture: formData.get("picture"),
+        avatar: formData.get("avatar"),
         displayName: formData.get("displayName"),
         bio: formData.get("bio"),
         role: formData.get("role"),
@@ -280,17 +280,17 @@ export async function updateUserProfile(formState: FormState, formData: FormData
 
     const { data: avatarData, error: avatarError } = await supabase
         .from("profiles")
-        .select("picture")
+        .select("avatar")
         .eq("id", userid)
         .single()
 
     if (avatarError) throw avatarError
 
-    let avatarUrl = avatarData.picture
+    let avatarUrl = avatarData.avatar
 
-    if (validatedFields.data.picture.size !== 0) {
-        const type = validatedFields.data.picture.name.split(".")[1]
-        const { data: uploadData, error: uploadError } = await supabase.storage.from("avatars").upload(`avatar_${userid}.${type}`, validatedFields.data.picture, {
+    if (validatedFields.data.avatar.size !== 0) {
+        const type = validatedFields.data.avatar.name.split(".")[1]
+        const { data: uploadData, error: uploadError } = await supabase.storage.from("avatars").upload(`avatar_${userid}.${type}`, validatedFields.data.avatar, {
             upsert: true,
         })
 
@@ -302,7 +302,7 @@ export async function updateUserProfile(formState: FormState, formData: FormData
     const { error: profileError } = await supabase
         .from("profiles")
         .update({
-            picture: avatarUrl,
+            avatar: avatarUrl,
             display_name: validatedFields.data.displayName,
             bio: validatedFields.data.bio,
             role: validatedFields.data.role,

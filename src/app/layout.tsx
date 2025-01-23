@@ -19,23 +19,22 @@ export default async function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
     const supabase = await createClient()
     const user = await supabase.auth.getUser()
+
     const {data: profileData } = await supabase
         .from("profiles")
-        .select("display_name, email, role, bio, picture")
+        .select("display_name, email, role, bio, avatar")
         .eq("id", user.data.user?.id)
         .single()
 
-    let avatarUrl = undefined
     let userProfile = null
-
-    if (profileData && profileData.picture) {
-        const { data: avatarBlob  } = await supabase.storage.from("avatars").getPublicUrl(profileData.picture)
-
-        avatarUrl = avatarBlob.publicUrl
-
+    if (profileData) {
         userProfile = {
-            ...profileData,
-            picture: avatarUrl,
+            ...profileData
+        }
+
+        if (profileData.avatar) {
+            const { data: avatarBlob  } = await supabase.storage.from("avatars").getPublicUrl(profileData.avatar)
+            userProfile.avatar = avatarBlob.publicUrl
         }
     }
 
@@ -51,9 +50,9 @@ export default async function RootLayout({
                     <NavigationBar userProfile={userProfile as UserProfile}>
                         { userProfile &&
                             <Avatar>
-                                <AvatarImage src={avatarUrl} />
+                                <AvatarImage src={userProfile.avatar} />
                                 <AvatarFallback>
-                                    {userProfile?.display_name
+                                    {userProfile.display_name
                                         .substring(0, 2)
                                         .toUpperCase()}
                                 </AvatarFallback>

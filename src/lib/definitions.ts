@@ -79,7 +79,7 @@ export const ChangePasswordFormScheme = z
 
 export const EditProfileFormSchema = z
     .object({
-        picture: z
+        avatar: z
             .instanceof(File),
         displayName: z
 			.string()
@@ -97,7 +97,7 @@ export const EditProfileFormSchema = z
 export type FormState =
 	| {
         errors?: {
-            picture?: string[];
+            avatar?: string[];
             displayName?: string[];
             email?: string[];
             password?: string[];

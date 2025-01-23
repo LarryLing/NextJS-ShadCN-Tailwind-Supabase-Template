@@ -69,7 +69,7 @@ export default function NavigationBar({ userProfile, children }: NavigationBarPr
 								alt="Your Company"
 							/>
 						</div>
-						<span className="hidden lg:inline">Website Name</span>
+						<span className="hidden lg:inline">NextJS Template</span>
 					</Link>
 					<NavigationMenuList className="md:flex hidden ml-4 gap-4">
 						{NavbarItems.map((item) => {
@@ -108,7 +108,7 @@ export default function NavigationBar({ userProfile, children }: NavigationBarPr
                                     userProfile={userProfile}
                                     openSettingsDialog={openSettingsDialog}
                                 >
-                                    { children }
+                                    {children}
                                 </AvatarPopover>
 							</div>
 						</>
