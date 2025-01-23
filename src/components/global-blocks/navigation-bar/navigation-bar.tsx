@@ -1,6 +1,6 @@
 "use client"
 
-import React, { ReactElement, useState } from "react"
+import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import {
 	NavigationMenu,
@@ -12,12 +12,14 @@ import {
 import { Button } from "../../ui/button"
 import { LogIn, MenuIcon, PlusIcon, Settings, XIcon } from "lucide-react"
 import { Separator } from "../../ui/separator"
-import { signout } from "@/lib/actions"
 import AvatarPopover from "./avatar-popover"
 import ThemeDropdown from "./theme-dropdown"
 import UserWidget from "./user-widget"
 import SettingsDialog from "../settings-dialog/settings-dialog"
 import { UserProfile } from "@/lib/types"
+import { signout } from "@/lib/actions"
+import { createClient } from "@/lib/supabase/client"
+import { User } from "@supabase/supabase-js"
 
 const NavbarItems = [
 	{
@@ -39,20 +41,50 @@ const NavbarItems = [
 ]
 
 type NavigationBarProps = {
-    userProfile: UserProfile | null;
-    children: ReactElement | null;
+    user: User | null;
 }
 
-export default function NavigationBar({ userProfile, children }: NavigationBarProps) {
+export default function NavigationBar({ user }: NavigationBarProps) {
+    const supabase = createClient()
+
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useState(false)
     const [isAvatarPopoverOpen, setIsAvatarPopoverOpen] = useState(false)
+    const [userProfile, setUserProfile] = useState<UserProfile | null>()
 
     function openSettingsDialog() {
         if (isMenuOpen) setIsMenuOpen(false)
         if (isAvatarPopoverOpen) setIsAvatarPopoverOpen(false)
         setIsSettingsDialogOpen(true)
     }
+
+    useEffect(() => {
+        async function getUserProfile(user: User | null) {
+            if (!user) {
+                setUserProfile(null)
+                return
+            }
+
+            let tempProfile = null
+
+            const {data: profileData } = await supabase
+                .from("profiles")
+                .select("id, display_name, email, role, bio, avatar")
+                .eq("id", user.id)
+                .single()
+
+                tempProfile = profileData as UserProfile
+
+                if (profileData && profileData.avatar) {
+                    const { data: avatarUrl } = await supabase.storage.from("avatars").getPublicUrl(profileData.avatar)
+                    tempProfile.avatar = avatarUrl.publicUrl
+                }
+
+            setUserProfile(tempProfile)
+        }
+
+        getUserProfile(user)
+    }, [user, supabase])
 
 	return (
 		<NavigationMenu className="z-[9998] sticky text-nowrap max-w-none w-full">
@@ -107,9 +139,7 @@ export default function NavigationBar({ userProfile, children }: NavigationBarPr
 								<AvatarPopover
                                     userProfile={userProfile}
                                     openSettingsDialog={openSettingsDialog}
-                                >
-                                    {children}
-                                </AvatarPopover>
+                                />
 							</div>
 						</>
 					) : (
@@ -175,9 +205,7 @@ export default function NavigationBar({ userProfile, children }: NavigationBarPr
 						<div className="px-2 pb-4">
 							<Separator className="w-full" />
 						</div>
-                        <UserWidget userProfile={userProfile} className="px-6 pb-4">
-                            { children }
-                        </UserWidget>
+                        <UserWidget userProfile={userProfile} className="px-6 pb-4" />
                         <div className="space-y-2 px-3 pb-4">
                             <ThemeDropdown />
                             <Button
@@ -200,7 +228,7 @@ export default function NavigationBar({ userProfile, children }: NavigationBarPr
 					</>
 				)}
             </div>
-            {userProfile && <SettingsDialog userProfile={userProfile} isSettingsDialogOpen={isSettingsDialogOpen} setIsSettingsDialogOpen={setIsSettingsDialogOpen} />}
+            {userProfile && <SettingsDialog userProfile={userProfile} setUserProfile={setUserProfile} isSettingsDialogOpen={isSettingsDialogOpen} setIsSettingsDialogOpen={setIsSettingsDialogOpen} />}
 		</NavigationMenu>
 	)
 }

@@ -191,7 +191,7 @@ export async function resetPassword(formState: FormState, formData: FormData) {
 		}
     }
 
-    const { data: passwordData, error: passwordError } = await supabase.rpc("changepassword", {
+    const { data: passwordData, error: passwordError } = await supabase.rpc("handle_password_change", {
         "current": validatedFields.data.password,
         "new": validatedFields.data.newPassword,
         "userid": userid,
@@ -260,7 +260,6 @@ export async function updateUserProfile(formState: FormState, formData: FormData
     const supabase = await createClient()
 
     const validatedFields = EditProfileFormSchema.safeParse({
-        avatar: formData.get("avatar"),
         displayName: formData.get("displayName"),
         bio: formData.get("bio"),
         role: formData.get("role"),
@@ -278,31 +277,9 @@ export async function updateUserProfile(formState: FormState, formData: FormData
 
     const userid = userData.user.id
 
-    const { data: avatarData, error: avatarError } = await supabase
-        .from("profiles")
-        .select("avatar")
-        .eq("id", userid)
-        .single()
-
-    if (avatarError) throw avatarError
-
-    let avatarUrl = avatarData.avatar
-
-    if (validatedFields.data.avatar.size !== 0) {
-        const type = validatedFields.data.avatar.name.split(".")[1]
-        const { data: uploadData, error: uploadError } = await supabase.storage.from("avatars").upload(`avatar_${userid}.${type}`, validatedFields.data.avatar, {
-            upsert: true,
-        })
-
-        if (uploadError) throw uploadError
-
-        avatarUrl = uploadData.path
-    }
-
     const { error: profileError } = await supabase
         .from("profiles")
         .update({
-            avatar: avatarUrl,
             display_name: validatedFields.data.displayName,
             bio: validatedFields.data.bio,
             role: validatedFields.data.role,

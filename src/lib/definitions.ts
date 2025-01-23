@@ -79,8 +79,6 @@ export const ChangePasswordFormScheme = z
 
 export const EditProfileFormSchema = z
     .object({
-        avatar: z
-            .instanceof(File),
         displayName: z
 			.string()
 			.min(4, { message: "Name must be at least 4 characters long. " })
@@ -97,7 +95,6 @@ export const EditProfileFormSchema = z
 export type FormState =
 	| {
         errors?: {
-            avatar?: string[];
             displayName?: string[];
             email?: string[];
             password?: string[];

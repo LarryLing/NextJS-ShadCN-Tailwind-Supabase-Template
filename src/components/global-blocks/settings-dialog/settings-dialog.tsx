@@ -13,14 +13,16 @@ import UpdateEmailCard from './update-email-card'
 import ChangePasswordCard from './change-password-card'
 import DeleteAccountCard from './delete-account-card'
 import { UserProfile } from '@/lib/types'
+import UploadAvatarCard from './upload-avatar-card'
 
 type SettingsDialogProps = {
     userProfile: UserProfile;
+    setUserProfile: (arg0: UserProfile) => void;
     isSettingsDialogOpen: boolean;
     setIsSettingsDialogOpen: (arg0: boolean) => void;
 }
 
-export default function SettingsDialog({ userProfile, isSettingsDialogOpen, setIsSettingsDialogOpen }: SettingsDialogProps) {
+export default function SettingsDialog({ userProfile, setUserProfile, isSettingsDialogOpen, setIsSettingsDialogOpen }: SettingsDialogProps) {
     return (
         <Dialog open={isSettingsDialogOpen} onOpenChange={setIsSettingsDialogOpen}>
             <DialogContent className="z-[9999] h-[600px] overflow-auto flex flex-col justify-start">
@@ -34,6 +36,7 @@ export default function SettingsDialog({ userProfile, isSettingsDialogOpen, setI
                         <TabsTrigger value="danger">Danger Zone</TabsTrigger>
                     </TabsList>
                     <TabsContent value="profile" className="space-y-4">
+                        <UploadAvatarCard userProfile={userProfile} setUserProfile={setUserProfile} />
                         <EditProfileCard userProfile={userProfile} />
                     </TabsContent>
                     <TabsContent value="security" className="space-y-4">

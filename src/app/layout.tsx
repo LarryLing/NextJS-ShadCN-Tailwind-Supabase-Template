@@ -3,9 +3,8 @@ import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/global-blocks/theme-provider"
 import { createClient } from "@/lib/supabase/server"
 import NavigationBar from "@/components/global-blocks/navigation-bar/navigation-bar"
-import { UserProfile } from "@/lib/types"
 import "./globals.css"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { UserProfile } from "@/lib/types"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -18,25 +17,8 @@ export default async function RootLayout({
 	children,
 }: Readonly<{ children: React.ReactNode }>) {
     const supabase = await createClient()
-    const user = await supabase.auth.getUser()
-
-    const {data: profileData } = await supabase
-        .from("profiles")
-        .select("display_name, email, role, bio, avatar")
-        .eq("id", user.data.user?.id)
-        .single()
-
-    let userProfile = null
-    if (profileData) {
-        userProfile = {
-            ...profileData
-        }
-
-        if (profileData.avatar) {
-            const { data: avatarBlob  } = await supabase.storage.from("avatars").getPublicUrl(profileData.avatar)
-            userProfile.avatar = avatarBlob.publicUrl
-        }
-    }
+    const userResponse = await supabase.auth.getUser()
+    const user = userResponse.data.user
 
 	return (
 		<html lang="en">
@@ -47,17 +29,7 @@ export default async function RootLayout({
 					enableSystem
 					disableTransitionOnChange
                 >
-                    <NavigationBar userProfile={userProfile as UserProfile}>
-                        { userProfile &&
-                            <Avatar>
-                                <AvatarImage src={userProfile.avatar} />
-                                <AvatarFallback>
-                                    {userProfile.display_name
-                                        .substring(0, 2)
-                                        .toUpperCase()}
-                                </AvatarFallback>
-                            </Avatar> }
-                    </NavigationBar>
+                    <NavigationBar user={user} />
 					{children}
 				</ThemeProvider>
 			</body>

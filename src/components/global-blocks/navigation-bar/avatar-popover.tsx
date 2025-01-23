@@ -1,31 +1,36 @@
 "use client"
 
-import React, { ReactElement } from "react"
+import React from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { signout } from "@/lib/actions"
 import UserWidget from "./user-widget"
 import { LogOut, Settings } from "lucide-react"
 import ThemeDropdown from "./theme-dropdown"
 import { UserProfile } from "@/lib/types"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { signout } from "@/lib/actions"
 
 type AvatarPopoverProps = {
     userProfile: UserProfile;
     openSettingsDialog: () => void;
-    children?: ReactElement | null;
 }
 
-export default function AvatarPopover({ userProfile, openSettingsDialog, children }: AvatarPopoverProps) {
+export default function AvatarPopover({ userProfile, openSettingsDialog }: AvatarPopoverProps) {
 	return (
         <Popover>
 			<PopoverTrigger>
-				{ children }
+				<Avatar>
+                    <AvatarImage src={userProfile.avatar} />
+                    <AvatarFallback>
+                        {userProfile.display_name
+                            .substring(0, 2)
+                            .toUpperCase()}
+                    </AvatarFallback>
+                </Avatar>
 			</PopoverTrigger>
 			<PopoverContent className="z-[9999] hidden md:block mt-1 mr-2 p-0" hideWhenDetached>
-                <UserWidget userProfile={userProfile} className="px-6 py-4" >
-                    { children }
-                </UserWidget>
+                <UserWidget userProfile={userProfile} className="px-6 py-4" />
 				<div className="px-3 pb-4 space-y-2">
                     <ThemeDropdown />
                     <Button
