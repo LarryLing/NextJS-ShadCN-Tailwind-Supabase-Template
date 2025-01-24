@@ -8,8 +8,8 @@ import {
 	LoginFormSchema,
 	EmailFormSchema,
 	SignupFormSchema,
-    ChangePasswordFormScheme,
-    EditProfileFormSchema,
+	ChangePasswordFormScheme,
+	EditProfileFormSchema,
 } from "@/lib/definitions"
 import { headers } from "next/headers"
 
@@ -42,16 +42,16 @@ export async function signup(formState: FormState, formData: FormData) {
 				email: ["This email is already associated with an account"],
 			},
 		}
-    }
+	}
 
 	const { error: signupError } = await supabase.auth.signUp({
 		email: validatedFields.data.email,
-        password: validatedFields.data.password,
-        options: {
-            data: {
-                display_name: validatedFields.data.displayName
-            }
-        }
+		password: validatedFields.data.password,
+		options: {
+			data: {
+				display_name: validatedFields.data.displayName,
+			},
+		},
 	})
 
 	if (signupError) throw signupError
@@ -92,33 +92,17 @@ export async function login(formState: FormState, formData: FormData) {
 	redirect("/")
 }
 
-export async function loginWithGoogle() {
-	const supabase = await createClient()
-
-	const { data: oauthData, error: oauthError } = await supabase.auth.signInWithOAuth({
-		provider: "google",
-		options: {
-			redirectTo: `${origin}/auth/callback`,
-		},
-	})
-
-	if (oauthError) {
-		throw oauthError
-	}
-
-	redirect(oauthData.url)
-}
-
 export async function loginWithDiscord() {
 	const supabase = await createClient()
 	const origin = (await headers()).get("origin")
 
-	const { data: oauthData, error: oauthError } = await supabase.auth.signInWithOAuth({
-		provider: "discord",
-		options: {
-			redirectTo: `${origin}/auth/callback`,
-		},
-	})
+	const { data: oauthData, error: oauthError } =
+		await supabase.auth.signInWithOAuth({
+			provider: "discord",
+			options: {
+				redirectTo: `${origin}/auth/callback`,
+			},
+		})
 
 	if (oauthError) {
 		throw oauthError
@@ -131,12 +115,13 @@ export async function loginWithGithub() {
 	const supabase = await createClient()
 	const origin = (await headers()).get("origin")
 
-	const { data: oauthData, error: oauthError } = await supabase.auth.signInWithOAuth({
-		provider: "github",
-		options: {
-			redirectTo: `${origin}/auth/callback`,
-		},
-	})
+	const { data: oauthData, error: oauthError } =
+		await supabase.auth.signInWithOAuth({
+			provider: "github",
+			options: {
+				redirectTo: `${origin}/auth/callback`,
+			},
+		})
 
 	if (oauthError) throw oauthError
 
@@ -155,17 +140,18 @@ export async function signout() {
 }
 
 export async function sendPasswordReset() {
-    const supabase = await createClient()
-    const { data: userData, error: userError} = await supabase.auth.getUser()
+	const supabase = await createClient()
+	const { data: userData, error: userError } = await supabase.auth.getUser()
 
-    if (userError) throw userError
+	if (userError) throw userError
 
-    if (!userData.user.email) return
+	if (!userData.user.email) return
 
 	const { error: resetError } = await supabase.auth.resetPasswordForEmail(
-        userData.user.email, {
-            redirectTo: "http://localhost:3000/login/reset-password",
-        }
+		userData.user.email,
+		{
+			redirectTo: "http://localhost:3000/login/reset-password",
+		},
 	)
 
 	if (resetError) throw resetError
@@ -173,14 +159,14 @@ export async function sendPasswordReset() {
 
 export async function resetPassword(formState: FormState, formData: FormData) {
 	const supabase = await createClient()
-    const { data: userData, error: userError} = await supabase.auth.getUser()
+	const { data: userData, error: userError } = await supabase.auth.getUser()
 
-    if (userError) throw userError
+	if (userError) throw userError
 
-    const userid = userData.user.id
+	const userid = userData.user.id
 
-    const validatedFields = ChangePasswordFormScheme.safeParse({
-        password: formData.get("password"),
+	const validatedFields = ChangePasswordFormScheme.safeParse({
+		password: formData.get("password"),
 		newPassword: formData.get("newPassword"),
 		confirmPassword: formData.get("confirmPassword"),
 	})
@@ -189,34 +175,37 @@ export async function resetPassword(formState: FormState, formData: FormData) {
 		return {
 			errors: validatedFields.error.flatten().fieldErrors,
 		}
-    }
+	}
 
-    const { data: passwordData, error: passwordError } = await supabase.rpc("handle_password_change", {
-        "current": validatedFields.data.password,
-        "new": validatedFields.data.newPassword,
-        "userid": userid,
-    })
+	const { data: passwordData, error: passwordError } = await supabase.rpc(
+		"handle_password_change",
+		{
+			current: validatedFields.data.password,
+			new: validatedFields.data.newPassword,
+			userid: userid,
+		},
+	)
 
 	if (passwordError) throw passwordError
 
-    if (!(passwordData as boolean)) {
-        return {
-            errors: {
-                password: ["Incorrect password"],
-            }
-        }
-    }
+	if (!(passwordData as boolean)) {
+		return {
+			errors: {
+				password: ["Incorrect password"],
+			},
+		}
+	}
 
-    const { error: signoutError } = await supabase.auth.signOut()
+	const { error: signoutError } = await supabase.auth.signOut()
 
-    if (signoutError) throw signoutError
+	if (signoutError) throw signoutError
 
 	revalidatePath("/")
 	redirect("/login")
 }
 
 export async function updateEmail(formState: FormState, formData: FormData) {
-    const supabase = await createClient()
+	const supabase = await createClient()
 
 	const validatedFields = EmailFormSchema.safeParse({
 		email: formData.get("email"),
@@ -226,9 +215,9 @@ export async function updateEmail(formState: FormState, formData: FormData) {
 		return {
 			errors: validatedFields.error.flatten().fieldErrors,
 		}
-    }
+	}
 
-    const { data: emailExistsData, error: emailExistsError } = await supabase
+	const { data: emailExistsData, error: emailExistsError } = await supabase
 		.from("profiles")
 		.select("email")
 		.eq("email", validatedFields.data.email)
@@ -241,50 +230,63 @@ export async function updateEmail(formState: FormState, formData: FormData) {
 				email: ["This email is already associated with an account"],
 			},
 		}
-    }
+	}
 
-    const { error: updateError } = await supabase.auth.updateUser({
-        email: validatedFields.data.email,
-        data: {
-            email: validatedFields.data.email,
-        }
-    })
+	const { data: updateData, error: updateError } =
+		await supabase.auth.updateUser({
+			email: validatedFields.data.email,
+			data: {
+				email: validatedFields.data.email,
+			},
+		})
 
-    if (updateError) throw updateError
+	if (updateError) throw updateError
+
+	const { error: profileError } = await supabase
+		.from("profiles")
+		.update({
+			email: validatedFields.data.email,
+		})
+		.eq("id", updateData.user.id)
+
+	if (profileError) throw profileError
 
 	revalidatePath("/")
 	redirect("/")
 }
 
-export async function updateUserProfile(formState: FormState, formData: FormData) {
-    const supabase = await createClient()
+export async function updateUserProfile(
+	formState: FormState,
+	formData: FormData,
+) {
+	const supabase = await createClient()
 
-    const validatedFields = EditProfileFormSchema.safeParse({
-        displayName: formData.get("displayName"),
-        bio: formData.get("bio"),
-        role: formData.get("role"),
-    })
+	const validatedFields = EditProfileFormSchema.safeParse({
+		displayName: formData.get("displayName"),
+		bio: formData.get("bio"),
+		role: formData.get("role"),
+	})
 
-    if (!validatedFields.success) {
-        return {
-            errors: validatedFields.error.flatten().fieldErrors,
-        }
-    }
+	if (!validatedFields.success) {
+		return {
+			errors: validatedFields.error.flatten().fieldErrors,
+		}
+	}
 
-    const { data: userData, error: userError } = await supabase.auth.getUser()
+	const { data: userData, error: userError } = await supabase.auth.getUser()
 
-    if (userError) throw userError
+	if (userError) throw userError
 
-    const userid = userData.user.id
+	const userid = userData.user.id
 
-    const { error: profileError } = await supabase
-        .from("profiles")
-        .update({
-            display_name: validatedFields.data.displayName,
-            bio: validatedFields.data.bio,
-            role: validatedFields.data.role,
-        })
-        .eq("id", userid)
+	const { error: profileError } = await supabase
+		.from("profiles")
+		.update({
+			display_name: validatedFields.data.displayName,
+			bio: validatedFields.data.bio,
+			role: validatedFields.data.role,
+		})
+		.eq("id", userid)
 
 	if (profileError) throw profileError
 

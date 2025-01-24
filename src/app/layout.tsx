@@ -3,12 +3,6 @@ import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/global-blocks/theme-provider"
 import { createClient } from "@/lib/supabase/server"
 import NavigationBar from "@/components/global-blocks/navigation-bar/navigation-bar"
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog"
 import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -21,9 +15,9 @@ export const metadata: Metadata = {
 export default async function RootLayout({
 	children,
 }: Readonly<{ children: React.ReactNode }>) {
-    const supabase = await createClient()
-    const userResponse = await supabase.auth.getUser()
-    const user = userResponse.data.user
+	const supabase = await createClient()
+	const userResponse = await supabase.auth.getUser()
+	const user = userResponse.data.user
 
 	return (
 		<html lang="en">
@@ -33,8 +27,8 @@ export default async function RootLayout({
 					defaultTheme="system"
 					enableSystem
 					disableTransitionOnChange
-                >
-                    <NavigationBar user={user} />
+				>
+					<NavigationBar user={user} />
 					{children}
 				</ThemeProvider>
 			</body>

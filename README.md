@@ -33,10 +33,10 @@
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">NextJS + Tailwind Template</h3>
+  <h3 align="center">NextJS + ShadCN/Tailwind + Supabase Template</h3>
 
   <p align="center">
-    A template repository including a navbar, profile and setting page templates, error handling, and login and signup functionality
+    A template repository including basic navigation and authentication/authorization functionality.
     <br />
     <br />
     <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
@@ -110,12 +110,7 @@ Of course, no one template will serve all projects since your needs may be diffe
 
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
 ### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
 
 - npm
     ```sh
@@ -124,25 +119,18 @@ This is an example of how to list things you need to use the software and how to
 
 ### Installation
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo
     ```sh
     git clone https://github.com/LarryLing/NextJS-Tailwind-Template.git
     ```
-3. Install NPM packages
+2. Install NPM packages
     ```sh
     npm install
     ```
-4. Enter your API in `config.js`
-    ```js
-    const API_KEY = "ENTER YOUR API"
-    ```
-5. Change git remote url to avoid accidental pushes to base project
+3. Change git remote url to avoid accidental pushes to base project
     ```sh
     git remote set-url origin github_username/NextJS-Tailwind-Template
-    git remote -v # confirm the changes
+    git remote -v
     ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -151,9 +139,151 @@ _Below is an example of how you can instruct your audience on installing and set
 
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+### Connecting to Supabase
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+1. Create a `.env.local` file in the root directory with the following fields
+    ```sh
+    NEXT_PUBLIC_SUPABASE_URL=<SUPABASE_URL>
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=<SUPABASE_ANON_KEY>
+    ```
+2. Create a new Supabase project and replace `<YOUR_SUPABASE_URL>` and `<SUPABASE_ANON_KEY>`
+   with the connection variables provided by Supabase
+
+3. Make sure your `.gitignore` file contains `.env.local` before pushing to a public repository
+
+### Managing users
+
+1. Inside your Supabase project dashboard, navigate to the SQL Editor and run the following queries
+
+    ```sh
+    CREATE TABLE profiles (
+        id UUID PRIMARY KEY DEFAULT auth.uid(),
+        display_name TEXT NOT NULL,
+        email TEXT NOT NULL DEFAULT auth.email() UNIQUE,
+        avatar TEXT,
+        role TEXT NOT NULL DEFAULT 'other',
+        bio TEXT DEFAULT ''
+    );
+
+    ALTER TABLE profiles
+        ADD CONSTRAINT fk_user
+        FOREIGN KEY (id)
+        REFERENCES auth.users (id)
+        ON DELETE CASCADE;
+
+    ALTER TABLE profiles
+        ENABLE ROW LEVEL SECURITY;
+
+    CREATE POLICY "User can only update own profile data"
+    ON profiles
+    FOR UPDATE
+    TO public
+    USING (
+        (auth.uid() = id)
+    );
+
+    CREATE POLICY "User can only select own profile data"
+    ON profiles
+    FOR SELECT
+    TO public
+    USING (
+        (auth.uid() = id)
+    );
+    ```
+
+    ```sh
+    CREATE FUNCTION public.handle_new_user()
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+    SECURITY DEFINER SET search_path = public
+    AS $$
+    BEGIN
+        INSERT INTO public.profiles(id, display_name, email)
+        VALUES (NEW.id, NEW.raw_user_meta_data ->> 'display_name', NEW.email);
+        RETURN NEW;
+    END;
+    $$;
+
+    CREATE TRIGGER on_auth_user_created
+    AFTER INSERT on auth.users
+    FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
+
+    CREATE FUNCTION public.handle_update_user()
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+    SECURITY DEFINER SET search_path = public
+    AS $$
+    BEGIN
+        UPDATE public.profiles
+        SET email = NEW.email
+        WHERE id = NEW.id;
+        RETURN NEW;
+    END;
+    $$;
+
+    CREATE TRIGGER on_auth_user_updated
+    AFTER UPDATE on auth.users
+    FOR EACH ROW EXECUTE PROCEDURE public.handle_update_user();
+    ```
+
+    ```sh
+    CREATE FUNCTION public.handle_password_change("current" text, "new" text, "userid" uuid)
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+    SECURITY DEFINER SET search_path = public
+    AS $$
+    DECLARE encpass auth.users.encrypted_password%type;
+    BEGIN
+        SELECT encrypted_password
+        FROM auth.users
+        INTO encpass
+        WHERE id = userid and encrypted_password = crypt(current, auth.users.encrypted_password);
+
+        IF NOT FOUND THEN
+            RETURN false;
+        ELSE
+            UPDATE auth.users SET encrypted_password = crypt(new, gen_salt('bf')) WHERE id = userid;
+            RETURN true;
+        END IF;
+    END;
+    $$;
+    ```
+
+### Email Templates
+
+1. Navigate to the Email Templates subsection within the Authentication section of the project dashboard and enter the following for the `Confirm Signup` email.
+    ```sh
+    <h2>Confirm your signup</h2>
+    <p>Follow this link to confirm your user:</p>
+    <p><a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup">Confirm your mail</a></p>
+    ```
+
+### Creating a storage bucket for avatars
+
+1. Navigate to the Storage section in the Supabase project dashboard and create a new public bucket named `avatars`
+
+2. Return to the SQL Editor section and run the following queries
+
+    ```sh
+    ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
+
+    CREATE POLICY objects_select_policy ON storage.objects FOR SELECT
+    USING (auth.role() = 'authenticated');
+
+    CREATE POLICY objects_insert_policy ON storage.objects FOR INSERT
+    WITH CHECK (auth.role() = 'authenticated');
+
+    CREATE POLICY objects_update_policy ON storage.objects FOR UPDATE
+    USING (auth.role() = 'authenticated');
+
+    CREATE POLICY objects_delete_policy ON storage.objects FOR DELETE
+    USING (auth.role() = 'authenticated');
+    ```
+
+### Settings up OAuth Third Party Providers
+
+This template comes ready Discord and Github social authentication. If you want to add
+additional social authenticators, please refer to the [Supabase documentation](https://supabase.com/docs/guides/auth/social-login)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -176,6 +306,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
     - [x] Profile updates
     - [x] Password recovery
     - [x] Email updates
+- [ ] Implement "Forgot Password" functionality
 - [ ] Implement shadow for suspense rendering
 - [ ] Update README with instructions for use
 

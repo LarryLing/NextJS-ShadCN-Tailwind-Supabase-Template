@@ -26,17 +26,10 @@ export default function ForgotPasswordForm() {
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
-				<form
-					action={action}
-					className="text-sm flex flex-col gap-6"
-				>
+				<form action={action} className="text-sm flex flex-col gap-6">
 					<div className="flex flex-col gap-2">
 						<Label htmlFor="email">Email</Label>
-						<Input
-							id="email"
-							name="email"
-							type="text"
-						/>
+						<Input id="email" name="email" type="text" />
 						{state?.errors?.email && (
 							<p className="text-sm text-destructive">
 								{state.errors.email}
@@ -44,21 +37,12 @@ export default function ForgotPasswordForm() {
 						)}
 					</div>
 					<div className="flex justify-between">
-						<Link
-							href="/login"
-							className="mr-2"
-						>
-							<Button
-								variant="outline"
-								disabled={pending}
-							>
+						<Link href="/login" className="mr-2">
+							<Button variant="outline" disabled={pending}>
 								Return to login
 							</Button>
 						</Link>
-						<Button
-							type="submit"
-							disabled={pending}
-						>
+						<Button type="submit" disabled={pending}>
 							Submit
 						</Button>
 					</div>
