@@ -208,25 +208,6 @@ Of course, no one template will serve all projects since your needs may be diffe
     AFTER INSERT ON auth.users
     FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
 
-    CREATE FUNCTION public.handle_update_user()
-    RETURNS TRIGGER
-    LANGUAGE plpgsql
-    SECURITY DEFINER SET search_path = public
-    AS $$
-    BEGIN
-        UPDATE public.profiles
-        SET email = NEW.email
-        WHERE id = NEW.id;
-        RETURN NEW;
-    END;
-    $$;
-
-    CREATE TRIGGER on_auth_user_updated
-    AFTER UPDATE ON auth.users
-    FOR EACH ROW EXECUTE PROCEDURE public.handle_update_user();
-    ```
-
-    ```sh
     CREATE FUNCTION public.handle_password_change("current" text, "new" text, "userid" uuid)
     RETURNS TRIGGER
     LANGUAGE plpgsql
@@ -246,6 +227,16 @@ Of course, no one template will serve all projects since your needs may be diffe
             RETURN true;
         END IF;
     END;
+    $$;
+
+    CREATE FUNCTION public.handle_delete_user()
+    RETURNS VOID
+    LANGUAGE plpgsql
+    SECURITY DEFINER
+    AS $$
+    BEGIN
+        DELETE FROM auth.users WHERE auth.uid()  = id;
+    END
     $$;
     ```
 

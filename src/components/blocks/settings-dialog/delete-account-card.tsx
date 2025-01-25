@@ -8,6 +8,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card"
+import { deleteAccount } from "@/lib/actions"
 import React from "react"
 
 export default function DeleteAccountCard() {
@@ -21,7 +22,9 @@ export default function DeleteAccountCard() {
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
-				<Button variant="destructive">Delete My Account</Button>
+				<Button variant="destructive" onClick={deleteAccount}>
+					Delete My Account
+				</Button>
 			</CardContent>
 		</Card>
 	)

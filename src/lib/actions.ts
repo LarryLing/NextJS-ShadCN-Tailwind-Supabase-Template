@@ -335,3 +335,18 @@ export async function updateUserProfile(
 	revalidatePath("/")
 	redirect("/")
 }
+
+export async function deleteAccount() {
+	const supabase = await createClient()
+
+	const { error: deleteError } = await supabase.rpc("handle_delete_user")
+
+	if (deleteError) throw deleteError
+
+	const { error: signoutError } = await supabase.auth.signOut()
+
+	if (signoutError) throw signoutError
+
+	revalidatePath("/")
+	redirect("/")
+}

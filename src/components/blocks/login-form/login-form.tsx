@@ -81,26 +81,26 @@ export function LoginForm({
 			</CardContent>
 			<div className="flex justify-center items-center text-sm p-6 pt-0">
 				<Separator className="w-24" />
-				<span className="mx-2">Or continue with</span>
+				<span className="mx-2">Or</span>
 				<Separator className="w-24" />
 			</div>
-			<CardFooter className="flex flex-col gap-6">
-				<div className="w-full flex gap-2">
-					<Button
-						onClick={loginWithDiscord}
-						disabled={pending}
-						className="flex-1 bg-discord hover:bg-discord/90 text-background"
-					>
-						<DiscordIcon className="size-6" />
-					</Button>
-					<Button
-						onClick={loginWithGithub}
-						disabled={pending}
-						className="flex-1 bg-github hover:bg-github/90 text-background"
-					>
-						<GithubIcon className="size-6" />
-					</Button>
-				</div>
+			<CardFooter className="flex flex-col gap-2">
+				<Button
+					onClick={loginWithDiscord}
+					disabled={pending}
+					className="w-full h-[50px] flex-1 bg-discord hover:bg-discord/90 text-background text-white"
+				>
+					<DiscordIcon />
+					Continue with Discord
+				</Button>
+				<Button
+					onClick={loginWithGithub}
+					disabled={pending}
+					className="w-full h-[50px] flex-1 bg-github hover:bg-github/90 text-background text-white"
+				>
+					<GithubIcon />
+					Continue with Github
+				</Button>
 			</CardFooter>
 		</Card>
 	)
