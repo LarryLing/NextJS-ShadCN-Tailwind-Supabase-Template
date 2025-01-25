@@ -182,12 +182,12 @@ Of course, no one template will serve all projects since your needs may be diffe
         (auth.uid() = id)
     );
 
-    CREATE POLICY "User can only select own profile data"
+    CREATE POLICY "Authenticated users can only select profile data"
     ON profiles
     FOR SELECT
     TO public
     USING (
-        (auth.uid() = id)
+        (auth.role() = 'authenticated')
     );
     ```
 
@@ -205,7 +205,7 @@ Of course, no one template will serve all projects since your needs may be diffe
     $$;
 
     CREATE TRIGGER on_auth_user_created
-    AFTER INSERT on auth.users
+    AFTER INSERT ON auth.users
     FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
 
     CREATE FUNCTION public.handle_update_user()
@@ -222,7 +222,7 @@ Of course, no one template will serve all projects since your needs may be diffe
     $$;
 
     CREATE TRIGGER on_auth_user_updated
-    AFTER UPDATE on auth.users
+    AFTER UPDATE ON auth.users
     FOR EACH ROW EXECUTE PROCEDURE public.handle_update_user();
     ```
 
@@ -251,11 +251,22 @@ Of course, no one template will serve all projects since your needs may be diffe
 
 ### Email Templates
 
-1. Navigate to the Email Templates subsection within the Authentication section of the project dashboard and enter the following for the `Confirm Signup` email.
+1. Navigate to the Email Templates subsection within the Authentication section of the project dashboard and enter the following markup for the `Confirm Signup` email.
+
     ```sh
     <h2>Confirm your signup</h2>
+
     <p>Follow this link to confirm your user:</p>
     <p><a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup">Confirm your mail</a></p>
+    ```
+
+2. Enter the following markup for the `Reset Password` email.
+
+    ```sh
+    <h2>Reset Password</h2>
+
+    <p>Follow this link to reset the password for your user:</p>
+    <p><a href="{{ .SiteURL }}/auth/recovery?token_hash={{ .TokenHash }}&type=recovery">Reset Password</a></p>
     ```
 
 ### Creating a storage bucket for avatars
@@ -306,7 +317,7 @@ additional social authenticators, please refer to the [Supabase documentation](h
     - [x] Profile updates
     - [x] Password recovery
     - [x] Email updates
-- [ ] Implement "Forgot Password" functionality
+- [x] Implement "Forgot Password" functionality
 - [ ] Implement shadow for suspense rendering
 - [ ] Update README with instructions for use
 
@@ -353,18 +364,19 @@ Project Link: [https://github.com/LarryLing/NextJS-Tailwind-Template](https://gi
 
 ## Acknowledgments
 
-- [Choose an Open Source License](https://choosealicense.com)
 - [NextJS Docs](https://nextjs.org/docs)
+- [NextJS Discord](https://discord.gg/nextjs)
+- [Supabase Docs](https://supabase.com/docs)
+- [Supbase Discord](https://discord.gg/s2T8BBtU)
 - [TailwindCSS Docs](https://tailwindcss.com/)
-- [Class Variance Authority Docs](https://cva.style/docs)
-- [CLSX](https://github.com/lukeed/clsx)
-- [Tailwind-Merge](https://github.com/dcastil/tailwind-merge)
 - [CSS Flexbox Layout Guide](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
 - [CSS Grid Layout Guide](https://css-tricks.com/snippets/css/complete%20%20-guide-grid/)
+- [Transform Tools](https://transform.tools/)
 - [Lucide Icons](https://lucide.dev/)
 - [Bootstrap Icons](https://icons.getbootstrap.com/)
 - [Markdown Badges](https://github.com/Ileriayo/markdown-badges/blob/master/README.md#-design)
 - [Badges 4 Markdown](https://github.com/alexandresanlim/Badges4-README.md-Profile)
+- [Choose an Open Source License](https://choosealicense.com)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

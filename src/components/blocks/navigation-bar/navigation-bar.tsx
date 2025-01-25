@@ -24,19 +24,19 @@ import { User } from "@supabase/supabase-js"
 const NavbarItems = [
 	{
 		name: "Item 1",
-		href: "#",
+		href: "/item1",
 	},
 	{
 		name: "Item 2",
-		href: "#",
+		href: "/item2",
 	},
 	{
 		name: "Item 3",
-		href: "#",
+		href: "/item3",
 	},
 	{
 		name: "Item 4",
-		href: "#",
+		href: "/item4",
 	},
 ]
 
