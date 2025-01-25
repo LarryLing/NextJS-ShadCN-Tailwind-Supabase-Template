@@ -11,11 +11,14 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { resetPassword } from "@/lib/actions"
+import { resetForgottenPassword } from "@/lib/actions"
 import { useActionState } from "react"
 
 export default function ResetPasswordForm() {
-	const [state, action, pending] = useActionState(resetPassword, undefined)
+	const [state, action, pending] = useActionState(
+		resetForgottenPassword,
+		undefined,
+	)
 
 	return (
 		<Card className="w-[384px]">
@@ -28,25 +31,21 @@ export default function ResetPasswordForm() {
 				</CardHeader>
 				<CardContent className="space-y-2">
 					<div className="space-y-1">
-						<Label htmlFor="password">Current Password</Label>
-						<Input id="password" name="password" type="password" />
-						{state?.errors.password && (
-							<p className="text-sm text-destructive">
-								{state.errors.password}
-							</p>
-						)}
-					</div>
-					<div className="space-y-1">
 						<Label htmlFor="newPassword">New Password</Label>
 						<Input
 							id="newPassword"
 							name="newPassword"
 							type="password"
 						/>
-						{state?.errors.newPassword && (
-							<p className="text-sm text-destructive">
-								{state.errors.newPassword}
-							</p>
+						{state?.errors?.newPassword && (
+							<div className="text-sm text-destructive">
+								<p>Password must:</p>
+								<ul>
+									{state.errors.newPassword.map((error) => (
+										<li key={error}>- {error}</li>
+									))}
+								</ul>
+							</div>
 						)}
 					</div>
 					<div className="space-y-1">

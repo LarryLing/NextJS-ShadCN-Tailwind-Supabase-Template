@@ -24,7 +24,7 @@ export function LoginForm({
 	const [state, action, pending] = useActionState(login, undefined)
 
 	return (
-		<Card>
+		<Card className="w-[384px]">
 			<CardHeader>
 				<CardTitle className="text-2xl">Login</CardTitle>
 				<CardDescription>

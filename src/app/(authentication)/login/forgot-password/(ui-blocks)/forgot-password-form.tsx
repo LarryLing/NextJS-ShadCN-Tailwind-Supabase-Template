@@ -10,12 +10,15 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { sendEmailReset } from "@/lib/actions"
+import { sendPasswordReset } from "@/lib/actions"
 import Link from "next/link"
 import React, { useActionState } from "react"
 
 export default function ForgotPasswordForm() {
-	const [state, action, pending] = useActionState(sendEmailReset, undefined)
+	const [state, action, pending] = useActionState(
+		sendPasswordReset,
+		undefined,
+	)
 
 	return (
 		<Card className="w-[384px]">

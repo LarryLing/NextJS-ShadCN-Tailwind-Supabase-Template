@@ -8,8 +8,9 @@ import {
 	LoginFormSchema,
 	EmailFormSchema,
 	SignupFormSchema,
-	ChangePasswordFormScheme,
+	ResetPasswordFormSchema,
 	EditProfileFormSchema,
+	ResetForgottenPasswordFormSchema,
 } from "@/lib/definitions"
 import { headers } from "next/headers"
 
@@ -29,32 +30,38 @@ export async function signup(formState: FormState, formData: FormData) {
 		}
 	}
 
-	const { data: emailExistsData, error: emailExistsError } = await supabase
-		.from("profiles")
-		.select("email")
-		.eq("email", validatedFields.data.email)
+	const { data: signupData, error: signupError } = await supabase.auth.signUp(
+		{
+			email: validatedFields.data.email,
+			password: validatedFields.data.password,
+			options: {
+				data: {
+					display_name: validatedFields.data.displayName,
+				},
+			},
+		},
+	)
 
-	if (emailExistsError) throw emailExistsError
+	if (signupError) throw signupError
 
-	if (emailExistsData.length > 0) {
+	if (
+		signupData.user &&
+		signupData.user.identities &&
+		signupData.user.identities.length === 0
+	) {
+		const { error: resendError } = await supabase.auth.resend({
+			type: "signup",
+			email: validatedFields.data.email,
+		})
+
+		if (resendError) throw resendError
+
 		return {
 			errors: {
 				email: ["This email is already associated with an account"],
 			},
 		}
 	}
-
-	const { error: signupError } = await supabase.auth.signUp({
-		email: validatedFields.data.email,
-		password: validatedFields.data.password,
-		options: {
-			data: {
-				display_name: validatedFields.data.displayName,
-			},
-		},
-	})
-
-	if (signupError) throw signupError
 
 	revalidatePath("/", "layout")
 	redirect("/")
@@ -139,16 +146,24 @@ export async function signout() {
 	redirect("/")
 }
 
-export async function sendPasswordReset() {
+export async function sendPasswordReset(
+	formState: FormState,
+	formData: FormData,
+) {
 	const supabase = await createClient()
-	const { data: userData, error: userError } = await supabase.auth.getUser()
 
-	if (userError) throw userError
+	const validatedFields = EmailFormSchema.safeParse({
+		email: formData.get("email"),
+	})
 
-	if (!userData.user.email) return
+	if (!validatedFields.success) {
+		return {
+			errors: validatedFields.error.flatten().fieldErrors,
+		}
+	}
 
 	const { error: resetError } = await supabase.auth.resetPasswordForEmail(
-		userData.user.email,
+		validatedFields.data.email,
 		{
 			redirectTo: "http://localhost:3000/login/reset-password",
 		},
@@ -165,7 +180,7 @@ export async function resetPassword(formState: FormState, formData: FormData) {
 
 	const userid = userData.user.id
 
-	const validatedFields = ChangePasswordFormScheme.safeParse({
+	const validatedFields = ResetPasswordFormSchema.safeParse({
 		password: formData.get("password"),
 		newPassword: formData.get("newPassword"),
 		confirmPassword: formData.get("confirmPassword"),
@@ -202,6 +217,33 @@ export async function resetPassword(formState: FormState, formData: FormData) {
 
 	revalidatePath("/")
 	redirect("/login")
+}
+
+export async function resetForgottenPassword(
+	formState: FormState,
+	formData: FormData,
+) {
+	const supabase = await createClient()
+
+	const validatedFields = ResetForgottenPasswordFormSchema.safeParse({
+		newPassword: formData.get("newPassword"),
+		confirmPassword: formData.get("confirmPassword"),
+	})
+
+	if (!validatedFields.success) {
+		return {
+			errors: validatedFields.error.flatten().fieldErrors,
+		}
+	}
+
+	const { error: updateError } = await supabase.auth.updateUser({
+		password: validatedFields.data.newPassword,
+	})
+
+	if (updateError) throw updateError
+
+	revalidatePath("/")
+	redirect("/")
 }
 
 export async function updateEmail(formState: FormState, formData: FormData) {

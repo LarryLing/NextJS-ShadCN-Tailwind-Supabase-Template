@@ -39,8 +39,9 @@ export const EmailFormSchema = z.object({
 	email: z.string().email({ message: "Please enter a valid email." }),
 })
 
-export const ForgotPasswordFormSchema = z
+export const ResetPasswordFormSchema = z
 	.object({
+		password: z.string().trim(),
 		newPassword: z
 			.string()
 			.min(6, { message: "Be at least 6 characters long." })
@@ -57,9 +58,8 @@ export const ForgotPasswordFormSchema = z
 		path: ["confirmPassword"],
 	})
 
-export const ChangePasswordFormScheme = z
+export const ResetForgottenPasswordFormSchema = z
 	.object({
-		password: z.string().trim(),
 		newPassword: z
 			.string()
 			.min(6, { message: "Be at least 6 characters long." })

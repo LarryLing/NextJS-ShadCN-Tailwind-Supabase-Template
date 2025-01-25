@@ -21,7 +21,7 @@ export function SignupForm() {
 	const [state, action, pending] = useActionState(signup, undefined)
 
 	return (
-		<Card>
+		<Card className="w-[384px]">
 			<CardHeader>
 				<CardTitle className="text-2xl">Sign Up</CardTitle>
 				<CardDescription>

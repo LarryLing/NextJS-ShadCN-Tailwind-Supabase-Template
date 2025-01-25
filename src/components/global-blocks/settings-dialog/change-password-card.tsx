@@ -43,10 +43,15 @@ export default function ChangePasswordCard() {
 							name="newPassword"
 							type="password"
 						/>
-						{state?.errors.newPassword && (
-							<p className="text-sm text-destructive">
-								{state.errors.newPassword}
-							</p>
+						{state?.errors?.newPassword && (
+							<div className="text-sm text-destructive">
+								<p>Password must:</p>
+								<ul>
+									{state.errors.newPassword.map((error) => (
+										<li key={error}>- {error}</li>
+									))}
+								</ul>
+							</div>
 						)}
 					</div>
 					<div className="space-y-1">
