@@ -19,13 +19,6 @@
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
 
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![Unlicense License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -36,9 +29,6 @@
   <h3 align="center">NextJS + ShadCN/Tailwind + Supabase Template</h3>
 
   <p align="center">
-    A template repository including basic navigation and authentication/authorization functionality.
-    <br />
-    <br />
     <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
     &middot;
     <a href="https://github.com/othneildrew/Best-README-Template/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
@@ -54,6 +44,7 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
+        <li><a href="#features">Features</a></li>
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
@@ -64,7 +55,16 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
+    <li>
+        <a href="#usage">Usage</a>
+        <ul>
+            <li><a href="#supabase-connection">Supabase Connection</a></li>
+            <li><a href="#user-profiles-table">User Profiles Table</a></li>
+            <li><a href="#email-templates">Email Templates</a></li>
+            <li><a href="#avatar-storage-bucket">Avatar Storage Bucket</a></li>
+            <li><a href="#oauth-third-party-providers">OAuth Third-Party Providers</a></li>
+      </ul>
+    </li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -79,15 +79,13 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
+This repository provides a simple and flexible starting point for building web applications with essential features like basic navigation, authentication, and authorization. It’s designed to give you a fast and easy setup to kickstart your project with a clean structure and built-in security features.
 
-Here's why:
+### Features
 
-- Your time should be focused on creating something amazing. A project that solves a problem and helps others
-- You shouldn't be doing the same tasks over and over like creating a README from scratch
-- You should implement DRY principles to the rest of your life :smile:
-
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
+- Basic Navigation: A simple and responsive navigation system with links to pages with suspense shadows.
+- User Authentication: Built-in user authentication functionality including login, registration, and password recovery.
+- Authorization: Role-based access to manage user permissions and restrict access to certain areas of the application.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -139,7 +137,7 @@ Of course, no one template will serve all projects since your needs may be diffe
 
 ## Usage
 
-### Connecting to Supabase
+### Supabase Connection
 
 1. Create a `.env.local` file in the root directory with the following fields
     ```sh
@@ -151,7 +149,7 @@ Of course, no one template will serve all projects since your needs may be diffe
 
 3. Make sure your `.gitignore` file contains `.env.local` before pushing to a public repository
 
-### Managing users
+### User Profiles Table
 
 1. Inside your Supabase project dashboard, navigate to the SQL Editor and run the following queries
 
@@ -182,7 +180,7 @@ Of course, no one template will serve all projects since your needs may be diffe
         (auth.uid() = id)
     );
 
-    CREATE POLICY "Authenticated users can only select profile data"
+    CREATE POLICY "Users can select profile data"
     ON profiles
     FOR SELECT
     TO public
@@ -260,7 +258,7 @@ Of course, no one template will serve all projects since your needs may be diffe
     <p><a href="{{ .SiteURL }}/auth/recovery?token_hash={{ .TokenHash }}&type=recovery">Reset Password</a></p>
     ```
 
-### Creating a storage bucket for avatars
+### Avatar Storage Bucket
 
 1. Navigate to the Storage section in the Supabase project dashboard and create a new public bucket named `avatars`
 
@@ -269,20 +267,35 @@ Of course, no one template will serve all projects since your needs may be diffe
     ```sh
     ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
 
-    CREATE POLICY objects_select_policy ON storage.objects FOR SELECT
+    CREATE POLICY "User can select objects" ON storage.objects FOR SELECT
     USING (auth.role() = 'authenticated');
 
-    CREATE POLICY objects_insert_policy ON storage.objects FOR INSERT
-    WITH CHECK (auth.role() = 'authenticated');
+    CREATE POLICY "User can upload in their own folders (in any bucket)"
+    ON storage.objects
+    FOR INSERT
+    TO authenticated
+    WITH CHECK (
+        (storage.foldername(name))[1] = (select auth.uid()::text)
+    );
 
-    CREATE POLICY objects_update_policy ON storage.objects FOR UPDATE
-    USING (auth.role() = 'authenticated');
+    CREATE POLICY "User can update in their own folders (in any bucket)"
+    ON storage.objects
+    FOR UPDATE
+    TO authenticated
+    WITH CHECK (
+        (storage.foldername(name))[1] = (select auth.uid()::text)
+    );
 
-    CREATE POLICY objects_delete_policy ON storage.objects FOR DELETE
-    USING (auth.role() = 'authenticated');
+    CREATE POLICY "User can delete their own objects (in any bucket)"
+    ON storage.objects
+    FOR DELETE
+    TO authenticated
+    USING (
+        owner = (select auth.uid())
+    );
     ```
 
-### Settings up OAuth Third Party Providers
+### OAuth Third Party Providers
 
 This template comes ready Discord and Github social authentication. If you want to add
 additional social authenticators, please refer to the [Supabase documentation](https://supabase.com/docs/guides/auth/social-login)
@@ -309,6 +322,10 @@ additional social authenticators, please refer to the [Supabase documentation](h
     - [x] Password recovery
     - [x] Email updates
 - [x] Implement "Forgot Password" functionality
+- [x] Add delete account functionality
+    - [x] Remove user from database
+    - [x] Delete all storage objects owned by deleted user
+- [ ] Display toast on successful email form submits
 - [ ] Implement shadow for suspense rendering
 - [ ] Update README with instructions for use
 
@@ -373,18 +390,6 @@ Project Link: [https://github.com/LarryLing/NextJS-Tailwind-Template](https://gi
 
 <!-- MARKDOWN LINKS & IMAGES -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
-[stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
 [product-screenshot]: images/screenshot.png
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/

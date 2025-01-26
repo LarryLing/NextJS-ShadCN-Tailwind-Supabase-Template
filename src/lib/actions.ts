@@ -64,7 +64,6 @@ export async function signup(formState: FormState, formData: FormData) {
 	}
 
 	revalidatePath("/", "layout")
-	redirect("/")
 }
 
 export async function login(formState: FormState, formData: FormData) {
@@ -338,6 +337,27 @@ export async function updateUserProfile(
 
 export async function deleteAccount() {
 	const supabase = await createClient()
+
+	const { data: userData, error: userError } = await supabase.auth.getUser()
+
+	if (userError) throw userError
+
+	const userId = userData.user.id
+
+	const { data: folderData, error: folderError } = await supabase.storage
+		.from("avatars")
+		.list(`${userId}`)
+
+	if (folderError) throw folderError
+
+	if (folderData.length > 0) {
+		const files = folderData.map((file) => `${userId}/${file.name}`)
+		const { error: removeError } = await supabase.storage
+			.from("avatars")
+			.remove(files)
+
+		if (removeError) throw removeError
+	}
 
 	const { error: deleteError } = await supabase.rpc("handle_delete_user")
 

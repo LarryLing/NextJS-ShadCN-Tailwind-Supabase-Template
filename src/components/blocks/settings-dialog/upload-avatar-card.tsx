@@ -32,17 +32,19 @@ export default function UploadAvatarCard({
 	async function uploadAvatar(e: ChangeEvent<HTMLInputElement>) {
 		setUploading(true)
 
-		if (!e.target.files || e.target.files?.length === 0) return
-
+		if (!e.target.files || e.target.files?.length === 0) {
+			setUploading(false)
+			return
+		}
 		setImageTooLarge(e.target.files[0].size > MAX_FILE_SIZE)
-		if (imageTooLarge) {
+		if (e.target.files[0].size > MAX_FILE_SIZE) {
 			setUploading(false)
 			return
 		}
 
 		const file = e.target.files[0]
 		const fileExt = file.name.split(".").pop()
-		const filePath = `${userProfile.id}_${Date.now()}.${fileExt}`
+		const filePath = `${userProfile.id}/avatar_${Date.now()}.${fileExt}`
 
 		const { error: uploadError } = await supabase.storage
 			.from("avatars")
