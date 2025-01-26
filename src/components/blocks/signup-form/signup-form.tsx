@@ -100,11 +100,11 @@ export function SignupForm() {
 						>
 							Sign Up
 						</Button>
-						<div className="mt-2 text-center text-sm">
+						<div className="mt-3 text-center text-sm">
 							Already have an account?{" "}
 							<Link
 								href="/login"
-								className="hover:underline underline-offset-4"
+								className="underline underline-offset-4"
 							>
 								Login
 							</Link>
@@ -117,7 +117,7 @@ export function SignupForm() {
 				<span className="mx-2">Or</span>
 				<Separator className="w-24" />
 			</div>
-			<CardFooter className="flex flex-col gap-2">
+			<CardFooter className="flex flex-col gap-3">
 				<Button
 					onClick={loginWithDiscord}
 					disabled={pending}

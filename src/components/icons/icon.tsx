@@ -1,5 +1,21 @@
 import * as React from "react"
 
+export function BrillianceIcon(props: React.SVGProps<SVGSVGElement>) {
+	return (
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width={32}
+			height={32}
+			fill="currentColor"
+			className="bi bi-brilliance"
+			viewBox="0 0 16 16"
+			{...props}
+		>
+			<path d="M8 16A8 8 0 118 0a8 8 0 010 16M1 8a7 7 0 007 7 3.5 3.5 0 100-7 3.5 3.5 0 110-7 7 7 0 00-7 7" />
+		</svg>
+	)
+}
+
 export function DiscordIcon(props: React.SVGProps<SVGSVGElement>) {
 	return (
 		<svg

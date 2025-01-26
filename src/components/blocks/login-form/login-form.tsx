@@ -67,11 +67,11 @@ export function LoginForm({
 						>
 							Login
 						</Button>
-						<div className="mt-2 text-center text-sm">
+						<div className="mt- text-center text-sm">
 							Don&apos;t have an account?{" "}
 							<Link
 								href="/signup"
-								className="hover:underline underline-offset-4"
+								className="underline underline-offset-4"
 							>
 								Sign up
 							</Link>
@@ -84,7 +84,7 @@ export function LoginForm({
 				<span className="mx-2">Or</span>
 				<Separator className="w-24" />
 			</div>
-			<CardFooter className="flex flex-col gap-2">
+			<CardFooter className="flex flex-col gap-3">
 				<Button
 					onClick={loginWithDiscord}
 					disabled={pending}
