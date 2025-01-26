@@ -18,20 +18,31 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select"
-import React, { useActionState } from "react"
+import React, { useActionState, useEffect } from "react"
 import { updateUserProfile } from "@/lib/actions"
 import { Textarea } from "@/components/ui/textarea"
 import { UserProfile } from "@/lib/types"
+import { useToast } from "@/hooks/use-toast"
 
 type EditProfileCardProps = {
 	userProfile: UserProfile
 }
 
 export default function EditProfileCard({ userProfile }: EditProfileCardProps) {
+	const { toast } = useToast()
 	const [state, action, pending] = useActionState(
 		updateUserProfile,
 		undefined,
 	)
+
+	useEffect(() => {
+		if (state?.message !== undefined) {
+			toast({
+				title: "Success",
+				description: state.message,
+			})
+		}
+	}, [state?.message])
 
 	return (
 		<Card>
@@ -51,7 +62,7 @@ export default function EditProfileCard({ userProfile }: EditProfileCardProps) {
 							type="text"
 							defaultValue={userProfile.display_name}
 						/>
-						{state?.errors.displayName && (
+						{state?.errors?.displayName && (
 							<p className="text-sm text-destructive">
 								{state.errors.displayName}
 							</p>
@@ -84,7 +95,7 @@ export default function EditProfileCard({ userProfile }: EditProfileCardProps) {
 								</SelectItem>
 							</SelectContent>
 						</Select>
-						{state?.errors.role && (
+						{state?.errors?.role && (
 							<p className="text-sm text-destructive">
 								{state.errors.role}
 							</p>
@@ -99,7 +110,7 @@ export default function EditProfileCard({ userProfile }: EditProfileCardProps) {
 							name="bio"
 							className="resize-none h-[100px]"
 						/>
-						{state?.errors.bio && (
+						{state?.errors?.bio && (
 							<p className="text-sm text-destructive">
 								{state.errors.bio}
 							</p>

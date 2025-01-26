@@ -11,16 +11,27 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import React, { useActionState } from "react"
+import React, { useActionState, useEffect } from "react"
 import { updateEmail } from "@/lib/actions"
 import { UserProfile } from "@/lib/types"
+import { useToast } from "@/hooks/use-toast"
 
 type UpdateEmailCardProps = {
 	userProfile: UserProfile
 }
 
 export default function UpdateEmailCard({ userProfile }: UpdateEmailCardProps) {
+	const { toast } = useToast()
 	const [state, action, pending] = useActionState(updateEmail, undefined)
+
+	useEffect(() => {
+		if (state?.message !== undefined) {
+			toast({
+				title: "Success",
+				description: state.message,
+			})
+		}
+	}, [state?.message])
 
 	return (
 		<Card>
@@ -42,7 +53,7 @@ export default function UpdateEmailCard({ userProfile }: UpdateEmailCardProps) {
 							type="text"
 							placeholder={userProfile.email}
 						/>
-						{state?.errors.email && (
+						{state?.errors?.email && (
 							<p className="text-sm text-destructive">
 								{state.errors.email}
 							</p>

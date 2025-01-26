@@ -26,7 +26,7 @@ export default function ResetPasswordForm() {
 				<CardHeader>
 					<CardTitle>Change Password</CardTitle>
 					<CardDescription>
-						After saving, you'll be prompted to the login page.
+						Please enter your new password.
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-2">

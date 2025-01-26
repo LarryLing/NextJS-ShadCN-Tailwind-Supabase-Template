@@ -114,6 +114,7 @@ This repository provides a simple and flexible starting point for building web a
     ```sh
     npm install npm@latest -g
     ```
+- Please have a Supabase account with a brand new project before preceeding
 
 ### Installation
 
@@ -193,7 +194,8 @@ This repository provides a simple and flexible starting point for building web a
     CREATE FUNCTION public.handle_new_user()
     RETURNS TRIGGER
     LANGUAGE plpgsql
-    SECURITY DEFINER SET search_path = public
+    SECURITY DEFINER
+    SET search_path = public
     AS $$
     BEGIN
         INSERT INTO public.profiles(id, display_name, email)
@@ -206,10 +208,29 @@ This repository provides a simple and flexible starting point for building web a
     AFTER INSERT ON auth.users
     FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
 
-    CREATE FUNCTION public.handle_password_change("current" text, "new" text, "userid" uuid)
+    CREATE FUNCTION public.handle_update_user()
     RETURNS TRIGGER
     LANGUAGE plpgsql
-    SECURITY DEFINER SET search_path = public
+    SECURITY DEFINER
+    SET search_path = public
+    AS $$
+    BEGIN
+        UPDATE public.profiles
+        SET email = NEW.email
+        WHERE id = NEW.id;
+        RETURN NEW;
+    END;
+    $$;
+
+    CREATE TRIGGER on_auth_user_updated
+    AFTER UPDATE ON auth.users
+    FOR EACH ROW EXECUTE PROCEDURE public.handle_update_user()
+
+    CREATE FUNCTION public.handle_password_change("current" text, "new" text, "userid" uuid)
+    RETURNS BOOLEAN
+    LANGUAGE plpgsql
+    SECURITY DEFINER
+    SET search_path = public
     AS $$
     DECLARE encpass auth.users.encrypted_password%type;
     BEGIN

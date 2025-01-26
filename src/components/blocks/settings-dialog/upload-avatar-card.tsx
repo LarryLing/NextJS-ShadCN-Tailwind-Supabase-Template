@@ -1,6 +1,6 @@
 "use client"
 
-import React, { ChangeEvent, useState } from "react"
+import React, { ChangeEvent, useEffect, useState } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
 	Card,
@@ -12,6 +12,7 @@ import {
 import { UserProfile } from "@/lib/types"
 import { Input } from "@/components/ui/input"
 import { createClient } from "@/lib/supabase/client"
+import { useToast } from "@/hooks/use-toast"
 
 type UploadAvatarCardProps = {
 	userProfile: UserProfile
@@ -24,6 +25,7 @@ export default function UploadAvatarCard({
 }: UploadAvatarCardProps) {
 	const supabase = createClient()
 
+	const { toast } = useToast()
 	const [uploading, setUploading] = useState(false)
 	const [avatarUrl, setAvatarUrl] = useState(userProfile.avatar)
 	const [imageTooLarge, setImageTooLarge] = useState(false)
@@ -71,6 +73,11 @@ export default function UploadAvatarCard({
 		})
 		setAvatarUrl(avatarData.publicUrl)
 		setUploading(false)
+
+		toast({
+			title: "Success",
+			description: "Your avatar was successfully updated!",
+		})
 	}
 
 	return (

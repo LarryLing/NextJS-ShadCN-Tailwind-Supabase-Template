@@ -98,6 +98,7 @@ export type FormState =
 				confirmPassword?: string[]
 				role?: string[]
 				bio?: string[]
+				success?: string[]
 			}
 	  }
 	| undefined

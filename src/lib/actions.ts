@@ -64,6 +64,10 @@ export async function signup(formState: FormState, formData: FormData) {
 	}
 
 	revalidatePath("/", "layout")
+
+	return {
+		message: "Please check your inbox to confirm your signup!",
+	}
 }
 
 export async function login(formState: FormState, formData: FormData) {
@@ -142,11 +146,11 @@ export async function signout() {
 	if (singoutError) throw singoutError
 
 	revalidatePath("/")
-	redirect("/")
+	redirect("/login")
 }
 
 export async function sendPasswordReset(
-	formState: FormState,
+	formState: unknown,
 	formData: FormData,
 ) {
 	const supabase = await createClient()
@@ -163,12 +167,13 @@ export async function sendPasswordReset(
 
 	const { error: resetError } = await supabase.auth.resetPasswordForEmail(
 		validatedFields.data.email,
-		{
-			redirectTo: "http://localhost:3000/login/reset-password",
-		},
 	)
 
 	if (resetError) throw resetError
+
+	return {
+		message: "Please check your inbox to recover your password!",
+	}
 }
 
 export async function resetPassword(formState: FormState, formData: FormData) {
@@ -273,27 +278,20 @@ export async function updateEmail(formState: FormState, formData: FormData) {
 		}
 	}
 
-	const { data: updateData, error: updateError } =
-		await supabase.auth.updateUser({
+	const { error: updateError } = await supabase.auth.updateUser({
+		email: validatedFields.data.email,
+		data: {
 			email: validatedFields.data.email,
-			data: {
-				email: validatedFields.data.email,
-			},
-		})
+		},
+	})
 
 	if (updateError) throw updateError
 
-	const { error: profileError } = await supabase
-		.from("profiles")
-		.update({
-			email: validatedFields.data.email,
-		})
-		.eq("id", updateData.user.id)
-
-	if (profileError) throw profileError
-
 	revalidatePath("/")
-	redirect("/")
+
+	return {
+		message: "Please check your inboxes to confirm your new email!",
+	}
 }
 
 export async function updateUserProfile(
@@ -332,7 +330,10 @@ export async function updateUserProfile(
 	if (profileError) throw profileError
 
 	revalidatePath("/")
-	redirect("/")
+
+	return {
+		message: "Your profile was successfully updated!",
+	}
 }
 
 export async function deleteAccount() {

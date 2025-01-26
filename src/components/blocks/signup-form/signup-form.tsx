@@ -11,14 +11,25 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useActionState } from "react"
+import { useActionState, useEffect } from "react"
 import { loginWithDiscord, loginWithGithub, signup } from "@/lib/actions"
 import { Separator } from "@/components/ui/separator"
 import { DiscordIcon, GithubIcon } from "@/components/icons/icon"
 import Link from "next/link"
+import { useToast } from "@/hooks/use-toast"
 
 export function SignupForm() {
+	const { toast } = useToast()
 	const [state, action, pending] = useActionState(signup, undefined)
+
+	useEffect(() => {
+		if (state?.message !== undefined) {
+			toast({
+				title: "Success",
+				description: state.message,
+			})
+		}
+	}, [state?.message])
 
 	return (
 		<Card className="w-[384px]">

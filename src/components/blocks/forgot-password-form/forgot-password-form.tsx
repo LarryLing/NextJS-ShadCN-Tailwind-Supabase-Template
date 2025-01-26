@@ -10,15 +10,26 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useToast } from "@/hooks/use-toast"
 import { sendPasswordReset } from "@/lib/actions"
 import Link from "next/link"
-import React, { useActionState } from "react"
+import React, { useActionState, useEffect } from "react"
 
 export default function ForgotPasswordForm() {
+	const { toast } = useToast()
 	const [state, action, pending] = useActionState(
 		sendPasswordReset,
 		undefined,
 	)
+
+	useEffect(() => {
+		if (state?.message !== undefined) {
+			toast({
+				title: "Success",
+				description: state.message,
+			})
+		}
+	}, [state?.message])
 
 	return (
 		<Card className="w-[384px]">
