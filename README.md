@@ -22,14 +22,14 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+  <a href="https://github.com/LarryLing/NextJS-ShadCN-Tailwind-Supabase-Template">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">NextJS + ShadCN/Tailwind + Supabase Template</h3>
 
   <p align="center">
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
+    <a href="https://github.com/LarryLing/NextJS-ShadCN-Tailwind-Supabase-Template">View Demo</a>
     &middot;
     <a href="https://github.com/othneildrew/Best-README-Template/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     &middot;
@@ -119,7 +119,7 @@ This repository provides a simple and flexible starting point for building web a
 
 1. Clone the repo
     ```sh
-    git clone https://github.com/LarryLing/NextJS-Tailwind-Template.git
+    git clone https://github.com/LarryLing/NextJS-ShadCN-Tailwind-Supabase-Template.git
     ```
 2. Install NPM packages
     ```sh
@@ -127,7 +127,7 @@ This repository provides a simple and flexible starting point for building web a
     ```
 3. Change git remote url to avoid accidental pushes to base project
     ```sh
-    git remote set-url origin github_username/NextJS-Tailwind-Template
+    git remote set-url origin github_username/NextJS-ShadCN-Tailwind-Supabase-Template
     git remote -v
     ```
 
@@ -246,7 +246,9 @@ This repository provides a simple and flexible starting point for building web a
     <h2>Confirm your signup</h2>
 
     <p>Follow this link to confirm your user:</p>
-    <p><a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup">Confirm your mail</a></p>
+    <p>
+        <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup">Confirm your mail</a>
+    </p>
     ```
 
 2. Enter the following markup for the `Reset Password` email.
@@ -255,7 +257,9 @@ This repository provides a simple and flexible starting point for building web a
     <h2>Reset Password</h2>
 
     <p>Follow this link to reset the password for your user:</p>
-    <p><a href="{{ .SiteURL }}/auth/recovery?token_hash={{ .TokenHash }}&type=recovery">Reset Password</a></p>
+    <p>
+        <a href="{{ .SiteURL }}/auth/recovery?token_hash={{ .TokenHash }}&type=recovery">Reset Password</a>
+    </p>
     ```
 
 ### Avatar Storage Bucket
@@ -327,7 +331,7 @@ additional social authenticators, please refer to the [Supabase documentation](h
     - [x] Delete all storage objects owned by deleted user
 - [ ] Display toast on successful email form submits
 - [ ] Implement shadow for suspense rendering
-- [ ] Update README with instructions for use
+- [x] Update README with instructions for use
 
 See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
 
@@ -364,7 +368,7 @@ Distributed under the MIT License. See `LICENSE.md` for more information.
 
 Larry Ling - [LinkedIn](https://www.linkedin.com/in/larry-ling-student/) - larryling.main@gmail.com
 
-Project Link: [https://github.com/LarryLing/NextJS-Tailwind-Template](https://github.com/LarryLing/NextJS-Tailwind-Template)
+Project Link: [NextJS-ShadCN-Tailwind-Supabase-Template](https://github.com/LarryLing/NextJS-ShadCN-Tailwind-Supabase-Template)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
