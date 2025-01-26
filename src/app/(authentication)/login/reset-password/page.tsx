@@ -9,9 +9,5 @@ export default async function ResetPasswordPage() {
 	const { data: userData } = await supabase.auth.getUser()
 	if (!userData.user) redirect("/")
 
-	return (
-		<div className="h-screen w-screen flex justify-center items-center">
-			<ResetPasswordForm />
-		</div>
-	)
+	return <ResetPasswordForm />
 }

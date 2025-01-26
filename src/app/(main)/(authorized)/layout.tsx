@@ -12,9 +12,5 @@ export default async function MainLayout({
 
 	if (!userData.user) redirect("/login")
 
-	return (
-		<section className="size-full flex justify-center items-center">
-			{children}
-		</section>
-	)
+	return <section>{children}</section>
 }

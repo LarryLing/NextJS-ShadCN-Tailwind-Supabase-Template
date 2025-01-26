@@ -350,8 +350,8 @@ additional social authenticators, please refer to the [Supabase documentation](h
 - [x] Add delete account functionality
     - [x] Remove user from database
     - [x] Delete all storage objects owned by deleted user
-- [ ] Display toast on successful email form submits
-- [ ] Implement shadow for suspense rendering
+- [x] Display toast on successful form submits
+- [x] Add skeletons for suspense rendering
 - [x] Update README with instructions for use
 
 See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).

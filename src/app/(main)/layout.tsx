@@ -12,7 +12,9 @@ export default async function MainLayout({
 	return (
 		<section>
 			<NavigationBar user={userData.user} />
-			{children}
+			<div className="size-full flex justify-center items-center mt-6">
+				{children}
+			</div>
 		</section>
 	)
 }
